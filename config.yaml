@@ -1,13 +1,144 @@
-baseURL: https://mybeer.recipes
-languageCode: en-us
+baseURL: https://mybeer.recipes/
+locale: en-us
 title: mybeer.recipes
+copyright: mybeer.recipes
 publishDir: docs
+
+enableRobotsTXT: true
+disableKinds: [taxonomy, term]
+
+outputs:
+  home: [HTML]
+  section: [HTML]
+  page: [HTML]
+
+sitemap:
+  changeFreq: weekly
+  priority: 0.5
+
+markup:
+  goldmark:
+    parser:
+      attribute:
+        block: true
+  tableOfContents:
+    startLevel: 2
+    endLevel: 2
+
+imaging:
+  resampleFilter: Lanczos
+  jpeg:
+    quality: 78
+  webp:
+    quality: 78
+
 params:
-    favicon: img/favicon.ico
-    social:
-    - title: twitter
-      url: http://twitter.com/MybeerRecipes
-    - title: github
-      url: https://github.com/mybeer-recipes
-    - title: gitter
-      url: https://gitter.im/mybeer-recipes/community
+  description: >-
+    Brewing software for homebrewers and commercial breweries. Design recipes
+    against their style, run each batch from mash to package, and track every
+    lot of malt, hops and yeast across iOS, Android, macOS, Windows, Linux and
+    the web.
+  # The default social sharing image (1200×630 is cropped from this).
+  image: images/brewing-kit.jpg
+  # Where "Open web app", "Log in", "Get the app" and the platform cards point.
+  # During the beta this is the sign-up page; set it to the web app's URL at launch.
+  appURL: /beta/
+  # Beta sign-ups go to listmonk. The lists must be public; make them double
+  # opt-in so people confirm by email (the beta page says a link was sent).
+  listmonk:
+    url: https://listmonk.mybeer.recipes
+    lists:
+      # Lists → (list) → UUID. Both start as the default "Opt-in list"; create
+      # "Beta – Homebrewers" and "Beta – Breweries" lists to split them.
+      homebrewer: cb487593-d517-49ee-99d5-a06bb7cb5892
+      brewery: cb487593-d517-49ee-99d5-a06bb7cb5892
+      # Product news list for the "Also send me product news" box. The box is
+      # hidden while this and signupEndpoint are both empty.
+      news: ""
+    # Optional: URL of the workers/beta-signup Cloudflare Worker. When set, sign-ups
+    # go through it so the brewery name and devices are stored on the subscriber.
+    signupEndpoint: ""
+  email: support@mybeer.recipes
+  analytics:
+    # Google Analytics 4. Only loaded after the visitor accepts analytics cookies.
+    measurementId: G-TFQN26BKLY
+  forms:
+    # POST endpoints (e.g. Formspree, Getform) for the email forms. While a form
+    # has no endpoint, its button opens an email to params.email instead.
+    newsletter: ""
+    developersWaitlist: ""
+    dataApiAccess: ""
+  social:
+    - https://twitter.com/MybeerRecipes
+    - https://github.com/mybeer-recipes
+    - https://gitter.im/mybeer-recipes/community
+
+menus:
+  main:
+    - name: Features
+      url: /#features
+      weight: 10
+    - name: Pricing
+      pageRef: /pricing
+      weight: 20
+    - name: Support
+      pageRef: /support
+      weight: 30
+    - name: Blog
+      pageRef: /blog
+      weight: 40
+      params:
+        soon: true
+    - name: Developers
+      pageRef: /developers
+      weight: 50
+      params:
+        soon: true
+
+  footerProduct:
+    - name: Features
+      url: /#features
+      weight: 10
+    - name: Pricing
+      pageRef: /pricing
+      weight: 20
+    - name: Download
+      url: /#download
+      weight: 30
+
+  footerResources:
+    - name: Support
+      pageRef: /support
+      weight: 10
+    - name: Blog
+      pageRef: /blog
+      weight: 20
+      params:
+        soon: true
+    - name: API docs
+      pageRef: /developers
+      weight: 30
+      params:
+        soon: true
+    - name: Data API
+      pageRef: /data-api
+      weight: 40
+      params:
+        soon: true
+
+  footerLegal:
+    - name: Privacy policy
+      pageRef: /legal/privacy
+      weight: 10
+    - name: Terms of service
+      pageRef: /legal/terms
+      weight: 20
+    - name: Cookies
+      url: /legal/privacy/#cookies
+      weight: 30
+    - name: Imprint
+      url: /legal/#imprint
+      weight: 40
+    - name: All legal documents
+      pageRef: /legal
+      weight: 50

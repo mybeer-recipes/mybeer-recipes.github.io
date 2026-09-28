@@ -1,0 +1,22 @@
+{{ define "main" }}
+<article class="mx-auto flex max-w-[760px] flex-col gap-8 px-6 pt-14 pb-28">
+  <header class="flex flex-col gap-4">
+    <a href="{{ .Parent.RelPermalink }}" class="flex items-center gap-1 self-start text-sm font-semibold">{{ partial "icon.html" (dict "name" "arrow_back" "class" "size-[18px]") }}{{ .Parent.Title }}</a>
+    <p class="eyebrow m-0">{{ .Params.category }} · {{ .ReadingTime }} min read</p>
+    <h1 class="heading-1">{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    <p class="m-0 text-sm text-muted">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+      {{- if gt (.Lastmod.Sub .Date).Hours 24 }} · Updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2 January 2006" }}</time>{{ end }}
+    </p>
+  </header>
+  {{ with .Params.image }}
+  <div class="overflow-hidden rounded-[20px] ring-1 ring-line">
+    {{ partial "photo.html" (dict "src" . "alt" $.Params.imageAlt "sizes" "(min-width: 760px) 712px, 100vw" "eager" true) }}
+  </div>
+  {{ end }}
+  <div class="prose">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

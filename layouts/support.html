@@ -1,0 +1,74 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+<div data-support>
+  <section class="border-b border-line bg-white">
+    <div class="mx-auto flex max-w-[760px] flex-col items-center gap-[18px] px-6 pt-18 pb-14 text-center">
+      <h1 class="m-0 font-display text-[clamp(34px,4.6vw,52px)] leading-[1.05] font-semibold tracking-[-1.4px]">{{ $p.heading }}</h1>
+      <form role="search" action="#articles" class="w-full" data-support-search hidden>
+        <label class="flex h-14 w-full items-center gap-2.5 rounded-[14px] bg-canvas px-[18px] ring-1 ring-line ring-inset has-focus:ring-2 has-focus:ring-brand">
+          <span class="text-subtle">{{ partial "icon.html" (dict "name" "search" "class" "size-[22px]") }}</span>
+          <span class="sr-only">Search help articles</span>
+          <input type="search" name="q" placeholder="Search help articles" autocomplete="off" class="min-w-0 flex-1 border-0 bg-transparent text-base text-ink outline-none placeholder:text-subtle" data-support-query>
+        </label>
+      </form>
+    </div>
+  </section>
+
+  <section class="container-page flex flex-col gap-5 pt-14">
+    <h2 class="m-0 font-display text-2xl font-semibold tracking-[-0.4px]">Topics</h2>
+    <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-3 p-0" role="list">
+      {{- range $p.topics }}
+      <li class="contents">
+        <a href="#articles" class="card-link grid grid-cols-[40px_1fr] items-start gap-3.5 p-5" data-topic="{{ .name }}">
+          <span class="flex size-10 items-center justify-center rounded-[10px] bg-brand-tint text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-[21px]") }}</span>
+          <span class="flex flex-col gap-1">
+            <span class="text-[15px] font-semibold">{{ .name }}</span>
+            <span class="text-[13px] leading-normal text-muted">{{ .body }}</span>
+          </span>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+
+  <section class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-8 pt-14 pb-28">
+    <div id="articles" class="flex scroll-mt-24 flex-col gap-3">
+      <h2 class="m-0 mb-1 font-display text-2xl font-semibold tracking-[-0.4px]" data-articles-title aria-live="polite">Popular articles</h2>
+      <div class="card overflow-hidden">
+        <ul class="m-0 list-none p-0" role="list">
+          {{- range $i, $a := $p.articles }}
+          <li class="border-b border-line-soft last:border-b-0" data-article="{{ lower (printf "%s %s" $a.title $a.topic) }}" data-topic-name="{{ $a.topic }}"{{ if ge $i 6 }} data-more hidden{{ end }}>
+            {{- $inner := printf `<span class="flex flex-col gap-0.5 py-3"><span class="font-medium">%s</span><span class="text-xs text-muted">%s</span></span>` ($a.title | htmlEscape) ($a.topic | htmlEscape) }}
+            {{- with $a.url }}
+            <a href="{{ . }}" class="flex min-h-14 items-center justify-between gap-3 px-[18px] text-[15px] text-ink hover:bg-canvas hover:text-ink">{{ $inner | safeHTML }}<span class="text-subtle">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-5") }}</span></a>
+            {{- else }}
+            <div class="flex min-h-14 items-center justify-between gap-3 px-[18px] text-[15px]">{{ $inner | safeHTML }}<span class="text-xs text-subtle">Coming soon</span></div>
+            {{- end }}
+          </li>
+          {{- end }}
+        </ul>
+        <p class="m-0 px-[18px] py-6 text-[15px] text-muted" data-articles-empty hidden>No articles here yet. Try another word, or <a href="mailto:{{ site.Params.email }}" class="font-semibold">write to us</a>.</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <div class="card flex flex-col gap-3.5 p-6">
+        <span class="text-brand">{{ partial "icon.html" (dict "name" "mail" "class" "size-[26px]") }}</span>
+        <h2 class="m-0 font-display text-xl font-semibold">{{ $p.contact.title }}</h2>
+        <p class="m-0 text-sm leading-[1.55] text-pretty text-muted">{{ $p.contact.body }}</p>
+        <a href="mailto:{{ site.Params.email }}" class="btn btn-md btn-primary self-start">{{ site.Params.email }}</a>
+      </div>
+      <nav aria-labelledby="account-links" class="card overflow-hidden">
+        <h2 id="account-links" class="m-0 px-[18px] pt-[18px] pb-2.5 text-xs font-bold tracking-[0.6px] uppercase text-muted">{{ $p.account.title }}</h2>
+        <ul class="m-0 list-none p-0" role="list">
+          {{- range $p.account.links }}{{ if .url }}
+          <li class="border-t border-line-soft">
+            <a href="{{ .url }}" class="flex min-h-[52px] items-center gap-3 px-[18px] text-[15px] hover:bg-canvas {{ if .danger }}text-danger hover:text-danger{{ else }}text-ink hover:text-ink{{ end }}"><span class="{{ if not .danger }}text-brand{{ end }}">{{ partial "icon.html" (dict "name" .icon "class" "size-5") }}</span>{{ .label }}</a>
+          </li>
+          {{- end }}{{ end }}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</div>
+{{ end }}

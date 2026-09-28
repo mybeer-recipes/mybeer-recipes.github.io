@@ -1,0 +1,14 @@
+{{- /* Pages that are noindexed (see head.html) are left out of the sitemap. */ -}}
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {{- range .Pages }}
+    {{- if and (not .Params.noindex) (not (partial "is-empty-blog.html" .)) (ne .Kind "404") }}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    {{- if and .IsPage (not .Lastmod.IsZero) }}
+    <lastmod>{{ .Lastmod.Format "2006-01-02" }}</lastmod>
+    {{- end }}
+  </url>
+    {{- end }}
+  {{- end }}
+</urlset>

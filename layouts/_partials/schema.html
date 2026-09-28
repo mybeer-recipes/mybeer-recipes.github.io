@@ -1,0 +1,107 @@
+{{- /* Structured data (schema.org JSON-LD) for search engines. */ -}}
+{{- $orgID := printf "%s#organization" site.Home.Permalink -}}
+{{- $graph := slice
+  (dict
+    "@type" "Organization"
+    "@id" $orgID
+    "name" site.Title
+    "url" site.Home.Permalink
+    "logo" (dict "@type" "ImageObject" "url" (absURL "icon-512.png") "width" 512 "height" 512)
+    "email" site.Params.email
+    "sameAs" site.Params.social
+  )
+  (dict
+    "@type" "WebSite"
+    "@id" (printf "%s#website" site.Home.Permalink)
+    "name" site.Title
+    "url" site.Home.Permalink
+    "description" site.Params.description
+    "publisher" (dict "@id" $orgID)
+  )
+-}}
+
+{{- /* The app itself, with an offer per pricing tier. */ -}}
+{{- if or .IsHome (eq .Layout "pricing") -}}
+  {{- with site.GetPage "/pricing" -}}
+    {{- $pricing := . -}}
+    {{- $offers := slice -}}
+    {{- $prices := slice -}}
+    {{- range .Params.tiers -}}
+      {{- $offers = $offers | append (dict
+        "@type" "Offer"
+        "name" .name
+        "description" .description
+        "price" (printf "%.2f" .monthly)
+        "priceCurrency" $pricing.Params.currency
+        "url" (printf "%s#tier-%s" $pricing.Permalink (urlize .name))
+      ) -}}
+      {{- $prices = $prices | append .monthly -}}
+    {{- end -}}
+    {{- $graph = $graph | append (dict
+      "@type" "SoftwareApplication"
+      "name" site.Title
+      "url" site.Home.Permalink
+      "description" site.Params.description
+      "applicationCategory" "BusinessApplication"
+      "applicationSubCategory" "Brewing software"
+      "operatingSystem" "iOS, Android, macOS, Windows, Linux, Web"
+      "publisher" (dict "@id" $orgID)
+      "offers" (dict
+        "@type" "AggregateOffer"
+        "priceCurrency" .Params.currency
+        "lowPrice" (printf "%.2f" (math.Min $prices))
+        "highPrice" (printf "%.2f" (math.Max $prices))
+        "offerCount" (len $offers)
+        "offers" $offers
+      )
+    ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* FAQ on the pricing page. */ -}}
+{{- with .Params.faq -}}
+  {{- $questions := slice -}}
+  {{- range . -}}
+    {{- $questions = $questions | append (dict
+      "@type" "Question"
+      "name" .q
+      "acceptedAnswer" (dict "@type" "Answer" "text" (.a | plainify | strings.TrimSpace))
+    ) -}}
+  {{- end -}}
+  {{- $graph = $graph | append (dict "@type" "FAQPage" "mainEntity" $questions) -}}
+{{- end -}}
+
+{{- /* Blog posts. */ -}}
+{{- if and .IsPage (eq .Section "blog") -}}
+  {{- $post := dict
+    "@type" "BlogPosting"
+    "headline" .Title
+    "description" (.Description | default .Summary | plainify)
+    "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+    "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+    "mainEntityOfPage" .Permalink
+    "author" (dict "@id" $orgID)
+    "publisher" (dict "@id" $orgID)
+  -}}
+  {{- with .Params.image }}{{ with resources.Get . }}{{ with .Fill "1200x630 Center jpg q80" }}
+    {{- $post = merge $post (dict "image" .Permalink) -}}
+  {{- end }}{{ end }}{{ end -}}
+  {{- with .Params.category }}{{ $post = merge $post (dict "articleSection" .) }}{{ end -}}
+  {{- $graph = $graph | append $post -}}
+{{- end -}}
+
+{{- /* Breadcrumbs for every page below the home page. */ -}}
+{{- if and (not .IsHome) (ne .Kind "404") -}}
+  {{- $items := slice -}}
+  {{- range $i, $p := .Ancestors.Reverse | append . -}}
+    {{- $items = $items | append (dict
+      "@type" "ListItem"
+      "position" (add $i 1)
+      "name" (cond $p.IsHome "Home" $p.LinkTitle)
+      "item" $p.Permalink
+    ) -}}
+  {{- end -}}
+  {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "itemListElement" $items) -}}
+{{- end -}}
+
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" $graph | jsonify | safeJS }}</script>

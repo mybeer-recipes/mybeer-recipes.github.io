@@ -1,0 +1,19 @@
+{{ define "main" }}
+<div class="mx-auto flex max-w-[880px] flex-col gap-10 px-6 pt-18 pb-28">
+  <header class="flex flex-col gap-3.5">
+    <h1 class="heading-1">{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+  {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+  <ul class="card m-0 list-none overflow-hidden p-0" role="list">
+    {{- range .RegularPages }}
+    <li class="border-b border-line-soft last:border-b-0">
+      <a href="{{ .RelPermalink }}" class="flex min-h-14 items-center justify-between gap-3 px-5 py-3 text-ink hover:bg-canvas hover:text-ink">
+        <span class="font-medium">{{ .LinkTitle }}</span>
+        <span class="text-subtle">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-5") }}</span>
+      </a>
+    </li>
+    {{- end }}
+  </ul>
+</div>
+{{ end }}

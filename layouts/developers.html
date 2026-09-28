@@ -1,0 +1,79 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+<section class="bg-night text-night-ink">
+  <div class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,440px),1fr))] items-center gap-12 py-20">
+    <div class="flex flex-col gap-5">
+      <p class="m-0 flex"><span class="inline-flex h-6 items-center rounded-full bg-night-soon px-2.5 text-xs font-bold tracking-[0.4px] whitespace-nowrap uppercase text-night-soon-ink">Coming soon</span></p>
+      <h1 class="heading-1">{{ $p.heading }}</h1>
+      <p class="m-0 max-w-[520px] text-[17px] leading-[1.6] text-pretty text-night-muted">{{ $p.intro }}</p>
+      {{ partial "email-form.html" (dict
+        "id" "waitlist"
+        "endpoint" site.Params.forms.developersWaitlist
+        "subject" $p.waitlist.subject
+        "button" $p.waitlist.button
+        "dark" true
+        "class" "max-w-[480px] pt-1"
+      ) }}
+    </div>
+    <figure class="m-0 min-w-0 overflow-hidden rounded-2xl bg-night-deep ring-1 ring-night-line-strong">
+      <figcaption class="flex h-10 items-center justify-between border-b border-night-line px-4 text-xs text-night-muted">
+        <span class="font-mono">GET /v1/recipes</span><span class="whitespace-nowrap">Preview · subject to change</span>
+      </figcaption>
+      <pre class="m-0 overflow-x-auto px-5 py-[18px] font-mono text-[13px] leading-[1.7] text-night-ink"><code><span class="text-night-dim">$</span> curl https://api.mybeer.recipes/v1/recipes \
+    -H <span class="text-night-soon-ink">"Authorization: Bearer $TOKEN"</span>
+
+{
+  <span class="text-night-accent">"data"</span>: [{
+    <span class="text-night-accent">"id"</span>: <span class="text-night-ok">"rcp_8f2k1"</span>,
+    <span class="text-night-accent">"name"</span>: <span class="text-night-ok">"Harbour Light Pale Ale"</span>,
+    <span class="text-night-accent">"style"</span>: <span class="text-night-ok">"American Pale Ale"</span>,
+    <span class="text-night-accent">"abv"</span>: <span class="text-night-soon-ink">5.2</span>,
+    <span class="text-night-accent">"ibu"</span>: <span class="text-night-soon-ink">38</span>,
+    <span class="text-night-accent">"og"</span>: <span class="text-night-soon-ink">1.052</span>
+  }]
+}</code></pre>
+    </figure>
+  </div>
+</section>
+
+<section class="container-page flex flex-col gap-5 pt-18">
+  <h2 class="heading-3">Documentation</h2>
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-3 p-0" role="list">
+    {{- range $p.docs }}
+    <li class="card flex flex-col gap-3 p-[22px]">
+      <span class="flex items-center justify-between">
+        <span class="text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-6") }}</span>
+        <span class="badge-soon h-5 px-[7px]">Soon</span>
+      </span>
+      <h3 class="m-0 text-base font-semibold">{{ .title }}</h3>
+      <p class="m-0 text-sm leading-[1.55] text-pretty text-muted">{{ .body }}</p>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+
+<section class="container-page flex flex-col gap-5 pt-18">
+  <h2 class="heading-3">Planned resources</h2>
+  <dl class="card m-0 overflow-hidden">
+    {{- range $p.resources }}
+    <div class="grid grid-cols-[minmax(120px,200px)_1fr] items-center gap-4 border-b border-line-soft px-5 py-3.5 last:border-b-0">
+      <dt class="font-mono text-[13px] text-brand">{{ .path }}</dt>
+      <dd class="m-0 text-[15px] text-ink">{{ .body }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+</section>
+
+{{ with site.GetPage "/data-api" }}
+<section class="container-page pt-18 pb-28">
+  <a href="{{ .RelPermalink }}" class="flex flex-wrap items-center justify-between gap-6 rounded-[20px] bg-brand-tint p-[clamp(24px,4vw,40px)] text-ink hover:bg-brand-tint-hover hover:text-ink">
+    <span class="flex max-w-[620px] flex-col gap-2">
+      <span class="eyebrow">Also planned</span>
+      <span class="font-display text-[26px] font-semibold tracking-[-0.5px]">{{ .Title }}</span>
+      <span class="text-[15px] leading-[1.55] text-pretty text-muted">Ingredient, style and water data for your own software, without a mybeer.recipes account.</span>
+    </span>
+    <span class="text-brand">{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-7") }}</span>
+  </a>
+</section>
+{{ end }}
+{{ end }}

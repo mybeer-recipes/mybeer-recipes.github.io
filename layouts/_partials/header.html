@@ -1,0 +1,49 @@
+{{- $page := . -}}
+{{- $appURL := site.Params.appURL -}}
+<header class="sticky top-0 z-50 border-b border-line bg-canvas/85 backdrop-blur-[18px]">
+  <div class="container-page flex h-16 items-center gap-6">
+    {{ partial "brand.html" dict }}
+
+    <nav aria-label="Main" class="hidden min-w-0 flex-1 items-center gap-0.5 lg:flex">
+      {{- range site.Menus.main }}
+        {{- $active := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
+        <a href="{{ .URL }}" {{ if $active }}aria-current="page" {{ end }}class="flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm whitespace-nowrap {{ if $active }}bg-brand-tint font-semibold text-brand hover:text-brand{{ else }}font-medium text-ink hover:bg-line-soft hover:text-ink{{ end }}">
+          {{ .Name }}{{ if .Params.soon }}<span class="badge-soon">Soon</span>{{ end }}
+        </a>
+      {{- end }}
+    </nav>
+
+    <div class="ml-4 hidden flex-none items-center gap-2 lg:flex">
+      {{/* BETA: hidden during the beta, restore at launch:
+      <a href="{{ $appURL }}" class="btn btn-sm px-3.5 text-ink hover:bg-line-soft hover:text-ink">Log in</a>
+      */}}
+      {{/* BETA: original label, restore at launch:
+      <a href="{{ $appURL }}" class="btn btn-sm btn-primary">Open web app{{ partial "icon.html" (dict "name" "arrow_outward" "class" "size-[18px]") }}</a>
+      */}}
+      <a href="{{ $appURL }}" class="btn btn-sm btn-primary">Join the beta{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-[18px]") }}</a>
+    </div>
+
+    <div class="flex flex-1 items-center justify-end gap-2 lg:hidden">
+      {{/* BETA: original label, restore at launch:
+      <a href="{{ $appURL }}" class="btn btn-sm btn-primary px-3.5">Web app</a>
+      */}}
+      <a href="{{ $appURL }}" class="btn btn-sm btn-primary px-3.5">Join the beta</a>
+      <button type="button" class="flex size-11 cursor-pointer items-center justify-center rounded-[10px] border-0 bg-line-soft text-ink" aria-controls="mobile-nav" aria-expanded="false" aria-label="Open menu" data-menu-toggle>
+        <span data-menu-icon="open">{{ partial "icon.html" (dict "name" "menu" "class" "size-[22px]") }}</span>
+        <span data-menu-icon="close" hidden>{{ partial "icon.html" (dict "name" "close" "class" "size-[22px]") }}</span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Main" class="flex flex-col gap-0.5 border-t border-line bg-white px-4 pt-2 pb-4 lg:hidden" hidden>
+    {{- range site.Menus.main }}
+      {{- $active := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
+      <a href="{{ .URL }}" {{ if $active }}aria-current="page" {{ end }}class="flex h-12 items-center gap-2 rounded-[10px] px-3 text-base {{ if $active }}bg-brand-tint font-semibold text-brand{{ else }}font-medium text-ink hover:bg-line-soft hover:text-ink{{ end }}">
+        {{ .Name }}{{ if .Params.soon }}<span class="badge-soon">Soon</span>{{ end }}
+      </a>
+    {{- end }}
+    {{/* BETA: hidden during the beta, restore at launch:
+    <a href="{{ $appURL }}" class="flex h-12 items-center rounded-[10px] px-3 text-base font-medium text-ink hover:bg-line-soft hover:text-ink">Log in</a>
+    */}}
+  </nav>
+</header>

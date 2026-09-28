@@ -1,0 +1,38 @@
+{{ define "main" }}
+<div class="mx-auto flex max-w-[880px] flex-col gap-10 px-6 pt-18 pb-28">
+  <div class="flex flex-col gap-3.5">
+    <h1 class="heading-1">{{ .Title }}</h1>
+    <p class="lede">{{ .Params.intro }}</p>
+  </div>
+
+  <ul class="card m-0 list-none overflow-hidden p-0" role="list">
+    {{- range .RegularPages.ByWeight }}
+    <li class="border-b border-line-soft last:border-b-0">
+      <a href="{{ .RelPermalink }}" class="grid grid-cols-[40px_1fr_auto] items-center gap-4 p-5 text-ink hover:bg-canvas hover:text-ink">
+        <span class="flex size-10 items-center justify-center rounded-[10px] bg-brand-tint text-brand">{{ partial "icon.html" (dict "name" (.Params.icon | default "description") "class" "size-[21px]") }}</span>
+        <span class="flex min-w-0 flex-col gap-1">
+          <span class="text-base font-semibold">{{ .LinkTitle }}</span>
+          <span class="text-sm leading-normal text-pretty text-muted">{{ .Summary | plainify }}</span>
+          {{- if .Lastmod }}<span class="text-xs text-subtle">Last updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2 January 2006" }}</time></span>{{ end }}
+        </span>
+        <span class="text-subtle">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-5") }}</span>
+      </a>
+    </li>
+    {{- end }}
+  </ul>
+
+  {{ with .Params.imprint }}
+  <section id="imprint" class="flex scroll-mt-24 flex-col gap-4">
+    <h2 class="m-0 font-display text-[26px] font-semibold tracking-[-0.5px]">Imprint</h2>
+    <dl class="card m-0 overflow-hidden">
+      {{- range . }}
+      <div class="grid grid-cols-[minmax(140px,220px)_1fr] gap-4 border-b border-line-soft px-5 py-3.5 text-[15px] last:border-b-0">
+        <dt class="text-muted">{{ .label }}</dt>
+        <dd class="m-0 self-center">{{ if strings.Contains .value "@" }}<a href="mailto:{{ .value }}">{{ .value }}</a>{{ else }}{{ .value }}{{ end }}</dd>
+      </div>
+      {{- end }}
+    </dl>
+  </section>
+  {{ end }}
+</div>
+{{ end }}

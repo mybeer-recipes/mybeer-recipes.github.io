@@ -1,0 +1,162 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+{{- $pricing := site.GetPage "/pricing" -}}
+
+{{/* Hero */}}
+<section class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-14 pt-18 pb-22">
+  <div class="flex flex-col gap-6">
+    <p class="m-0 flex"><span class="inline-flex min-h-[26px] items-center rounded-full bg-brand-tint px-2.5 text-xs font-semibold text-brand">{{ $p.hero.platforms }}</span></p>
+    <h1 class="m-0 font-display text-[clamp(40px,5.6vw,64px)] leading-[1.02] font-semibold tracking-[-2px] text-balance">{{ $p.hero.title }}</h1>
+    <p class="m-0 max-w-[520px] text-lg leading-[1.55] text-pretty text-muted">{{ $p.hero.body }}</p>
+    <div class="flex flex-wrap gap-2.5 pt-1">
+      {{/* BETA: original label, restore at launch:
+      <a href="{{ site.Params.appURL }}" class="btn btn-lg btn-primary">Open the web app{{ partial "icon.html" (dict "name" "arrow_outward" "class" "size-[18px]") }}</a>
+      */}}
+      <a href="{{ site.Params.appURL }}" class="btn btn-lg btn-primary">Join the beta{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-[18px]") }}</a>
+      <a href="#download" class="btn btn-lg btn-tint">{{ partial "icon.html" (dict "name" "download" "class" "size-[18px]") }}Get the app</a>
+    </div>
+  </div>
+
+  <div class="relative min-h-[520px]">
+    <div class="absolute inset-0 bottom-14 left-14 overflow-hidden rounded-3xl ring-1 ring-line">
+      {{ partial "photo.html" (dict "src" $p.hero.image "alt" $p.hero.imageAlt "class" "h-full" "sizes" "(min-width: 1200px) 520px, 90vw" "eager" true) }}
+    </div>
+    {{ with $p.hero.recipe }}
+    <figure class="absolute bottom-0 left-0 m-0 w-[min(100%,400px)] overflow-hidden rounded-2xl bg-white shadow-float ring-1 ring-line">
+      <figcaption class="sr-only">Example recipe in mybeer.recipes: {{ .name }}, with its numbers checked against the style range.</figcaption>
+      <div class="flex items-center gap-3 border-b border-line-soft px-[18px] pt-4 pb-3.5">
+        <div class="flex size-9 items-center justify-center rounded-[10px] bg-canvas text-brand">{{ partial "icon.html" (dict "name" "sports_bar" "class" "size-5") }}</div>
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <span class="text-[15px] font-semibold">{{ .name }}</span>
+          <span class="text-[13px] text-muted">{{ .meta }}</span>
+        </div>
+      </div>
+      <dl class="m-0 grid grid-cols-5 gap-2 border-b border-line-soft px-[18px] py-3.5">
+        {{- range .stats }}
+        <div class="flex flex-col gap-0.5">
+          <dt class="text-[11px] text-muted">{{ .label }}</dt>
+          <dd class="m-0 flex items-center gap-1.5 font-display text-lg font-semibold">{{ if .swatch }}<span class="size-2.5 rounded-full bg-srm" aria-hidden="true"></span>{{ end }}{{ .value }}</dd>
+        </div>
+        {{- end }}
+      </dl>
+      <div class="flex flex-col gap-2.5 px-[18px] pt-3 pb-4">
+        <span class="text-xs font-bold tracking-[0.6px] uppercase text-muted">Style fit</span>
+        {{- range .fit }}
+        <div class="grid grid-cols-[44px_1fr_72px] items-center gap-2.5 text-[13px]">
+          <span class="text-muted">{{ .label }}</span>
+          <div class="relative h-1.5 rounded-[3px] bg-line-soft" aria-hidden="true">
+            <div class="absolute inset-y-0 rounded-[3px] bg-ok-tint" style="left:{{ .from }}%;width:{{ .span }}%"></div>
+            <div class="absolute -top-[3px] h-3 w-1 rounded-sm bg-ok-strong" style="left:{{ .at }}%"></div>
+          </div>
+          <span class="flex items-center gap-1 text-xs font-semibold text-ok">{{ partial "icon.html" (dict "name" "check_circle" "class" "size-4") }}In range</span>
+        </div>
+        {{- end }}
+      </div>
+    </figure>
+    {{ end }}
+  </div>
+</section>
+
+{{/* Feature rows */}}
+<section id="features" aria-label="Features" class="container-page flex scroll-mt-20 flex-col gap-24 pt-6 pb-10">
+  {{- range $i, $f := $p.features }}
+  <div class="grid items-center gap-12 min-[880px]:grid-cols-2">
+    <div class="flex max-w-[480px] flex-col gap-3.5">
+      <p class="eyebrow m-0">{{ $f.eyebrow }}</p>
+      <h2 class="heading-2">{{ $f.title }}</h2>
+      <p class="m-0 text-base leading-[1.6] text-pretty text-muted">{{ $f.body }}</p>
+    </div>
+    <div class="flex justify-center rounded-3xl bg-line-soft p-[clamp(20px,4vw,48px)]{{ if modBool $i 2 | not }} min-[880px]:order-first{{ end }}">
+      {{ partial "home-demo.html" (dict "name" $f.demo "data" (index $p.demos $f.demo)) }}
+    </div>
+  </div>
+  {{- end }}
+</section>
+
+{{/* Photo band */}}
+{{ with $p.band }}
+<section aria-label="Brewing equipment" class="container-page py-14">
+  <div class="h-[clamp(220px,32vw,420px)] overflow-hidden rounded-3xl ring-1 ring-line">
+    {{ partial "photo.html" (dict "src" .image "alt" .alt "class" "h-full" "sizes" "(min-width: 1200px) 1152px, 100vw") }}
+  </div>
+</section>
+{{ end }}
+
+{{/* Also in the app */}}
+{{ with $p.more }}
+<section class="container-page flex flex-col gap-8 pt-10 pb-24">
+  <h2 class="heading-3">{{ .title }}</h2>
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-px overflow-hidden rounded-2xl bg-line p-0 ring-1 ring-line" role="list">
+    {{- range .items }}
+    <li class="flex flex-col gap-2.5 bg-white p-6">
+      <span class="text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-6") }}</span>
+      <h3 class="m-0 text-base font-semibold">{{ .title }}</h3>
+      <p class="m-0 text-sm leading-[1.55] text-pretty text-muted">{{ .body }}</p>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+{{ end }}
+
+{{/* Audiences */}}
+<section aria-label="Who it's for" class="border-y border-line bg-white">
+  <div class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] gap-6 py-22">
+    {{- range $p.audiences }}
+    <article class="flex flex-col overflow-hidden rounded-[20px] bg-canvas ring-1 ring-line">
+      {{ partial "photo.html" (dict "src" .image "alt" .imageAlt "class" "h-[220px]" "sizes" "(min-width: 1200px) 564px, 100vw") }}
+      <div class="flex flex-col gap-3 p-7">
+        <h2 class="m-0 font-display text-[26px] font-semibold tracking-[-0.5px]">{{ .title }}</h2>
+        <p class="m-0 text-[15px] leading-[1.6] text-pretty text-muted">{{ .body }}</p>
+        <a href="{{ $pricing.RelPermalink }}" class="flex items-center gap-1 pt-1 text-[15px] font-semibold">{{ .link }}{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-[18px]") }}</a>
+      </div>
+    </article>
+    {{- end }}
+  </div>
+</section>
+
+{{/* Download */}}
+{{ with $p.download }}
+<section id="download" class="container-page flex scroll-mt-20 flex-col gap-8 pt-24 pb-12">
+  <div class="flex max-w-[640px] flex-col gap-3">
+    <h2 class="heading-2">{{ .title }}</h2>
+    <p class="m-0 text-base leading-[1.6] text-pretty text-muted">{{ .body }}</p>
+  </div>
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(max(150px,calc((100%_-_24px)/3)),1fr))] gap-3 p-0" role="list">
+    {{- range .platforms }}
+      {{- $url := .url | default site.Params.appURL }}
+      <li class="contents">
+        {{- if $url }}
+        <a href="{{ $url }}" class="card-link flex flex-col gap-3.5 p-5">
+        {{- else }}
+        <div class="card flex flex-col gap-3.5 p-5">
+        {{- end }}
+          <span class="text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-7") }}</span>
+          <span class="flex flex-col gap-[3px]">
+            <span class="text-base font-semibold">{{ .name }}</span>
+            <span class="text-[13px] text-muted">{{ .store }}</span>
+          </span>
+        {{- if $url }}</a>{{ else }}</div>{{ end }}
+      </li>
+    {{- end }}
+  </ul>
+</section>
+{{ end }}
+
+{{/* Pricing teaser */}}
+{{ with $p.pricingTeaser }}
+<section class="container-page pt-12 pb-28">
+  <div class="flex flex-wrap items-center justify-between gap-8 rounded-3xl bg-brand p-[clamp(28px,5vw,56px)] text-white">
+    <div class="flex max-w-[600px] flex-col gap-3.5">
+      <h2 class="heading-2">{{ .title }}</h2>
+      <p class="m-0 text-base leading-[1.6] text-pretty">{{ .body }}</p>
+      <ul class="m-0 flex list-none flex-wrap gap-1.5 p-0 pt-1" role="list" aria-label="Plans">
+        {{- range $pricing.Params.tiers }}
+        <li class="flex h-7 items-center rounded-full bg-white/15 px-[11px] text-[13px] font-semibold">{{ .name }}</li>
+        {{- end }}
+      </ul>
+    </div>
+    <a href="{{ $pricing.RelPermalink }}" class="btn btn-lg bg-white px-[22px] text-brand hover:bg-brand-tint hover:text-brand">Compare plans{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-[18px]") }}</a>
+  </div>
+</section>
+{{ end }}
+{{ end }}

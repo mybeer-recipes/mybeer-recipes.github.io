@@ -1,0 +1,20 @@
+{{- /*
+A responsive photo from assets/images, or the striped placeholder panel when no image is set.
+Usage: {{ partial "photo.html" (dict "src" "images/x.jpg" "alt" "…" "class" "h-56" "sizes" "100vw" "eager" false) }}
+*/ -}}
+{{- $img := "" -}}
+{{- with .src }}{{ $img = resources.Get . }}{{ end -}}
+{{- if $img -}}
+  {{- $widths := slice 480 800 1200 1600 2000 -}}
+  {{- $srcset := slice -}}
+  {{- range $widths }}{{ if le . $img.Width }}
+    {{- with $img.Resize (printf "%dx webp q78" .) }}{{ $srcset = $srcset | append (printf "%s %dw" .RelPermalink .Width) }}{{ end -}}
+  {{- end }}{{ end -}}
+  {{- $fallback := $img.Resize "1200x jpg q78" -}}
+<picture>
+  <source type="image/webp" srcset="{{ delimit $srcset ", " }}" sizes="{{ .sizes | default "100vw" }}">
+  <img src="{{ $fallback.RelPermalink }}" width="{{ $fallback.Width }}" height="{{ $fallback.Height }}" alt="{{ .alt }}" class="block w-full object-cover {{ .class }}"{{ if .eager }} fetchpriority="high"{{ else }} loading="lazy"{{ end }} decoding="async">
+</picture>
+{{- else -}}
+<div class="stripes {{ .class }}" aria-hidden="true"></div>
+{{- end -}}

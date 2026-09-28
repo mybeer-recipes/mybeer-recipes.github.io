@@ -1,0 +1,16 @@
+name = "mybeer-beta-signup"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+LISTMONK_URL = "https://listmonk.mybeer.recipes"
+ALLOWED_ORIGIN = "https://mybeer.recipes"
+# listmonk list UUIDs (Lists → list → UUID), the same ones as params.listmonk.lists
+# in the site's config.yaml. LIST_NEWS may be left empty.
+LIST_HOMEBREWER = "cb487593-d517-49ee-99d5-a06bb7cb5892"
+LIST_BREWERY = "cb487593-d517-49ee-99d5-a06bb7cb5892"
+LIST_NEWS = ""
+
+# Set these as secrets, not here:
+#   wrangler secret put LISTMONK_USER    (the API user's username)
+#   wrangler secret put LISTMONK_TOKEN   (the API user's token)

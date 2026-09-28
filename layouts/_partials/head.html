@@ -1,0 +1,55 @@
+{{- $title := .Params.seoTitle | default (cond .IsHome site.Title (printf "%s | %s" .Title site.Title)) -}}
+{{- $description := .Description | default site.Params.description | plainify | strings.TrimSpace -}}
+{{- $indexable := and hugo.IsProduction (not .Draft) (not .Params.noindex) (ne .Kind "404") (not (partial "is-empty-blog.html" .)) -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+<meta name="robots" content="{{ if $indexable }}index, follow, max-image-preview:large, max-snippet:-1{{ else }}noindex, follow{{ end }}">
+{{ if ne .Kind "404" }}<link rel="canonical" href="{{ .Permalink }}">{{ end }}
+<meta name="theme-color" content="#F8F6F5">
+
+<link rel="preload" href="/fonts/work-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+{{ partial "css.html" . }}
+
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+{{- with site.GetPage "/blog" }}{{ with .OutputFormats.Get "rss" }}
+<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }} blog">
+{{- end }}{{ end }}
+
+{{- /* Open Graph and Twitter cards */}}
+{{- $image := "" }}
+{{- with .Params.image }}{{ $image = resources.Get . }}{{ end }}
+{{- if not $image }}{{ $image = resources.Get site.Params.image }}{{ end }}
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace (site.Language.Locale | default "en-us") "-" "_" }}">
+<meta property="og:type" content="{{ if and .IsPage (eq .Section "blog") }}article{{ else }}website{{ end }}">
+<meta property="og:title" content="{{ .Params.seoTitle | default .Title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{- with $image }}
+{{- with .Fill "1200x630 Center jpg q80" }}
+<meta property="og:image" content="{{ .Permalink }}">
+<meta property="og:image:width" content="{{ .Width }}">
+<meta property="og:image:height" content="{{ .Height }}">
+<meta property="og:image:alt" content="{{ $.Params.imageAlt | default "Homebrewing equipment laid out on a wooden bench" }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ .Permalink }}">
+{{- end }}
+{{- end }}
+{{- range site.Params.social }}{{ if in . "twitter.com" }}
+<meta name="twitter:site" content="@{{ path.Base . }}">
+{{- end }}{{ end }}
+{{- if and .IsPage (eq .Section "blog") }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- with .Params.category }}
+<meta property="article:section" content="{{ . }}">
+{{- end }}
+{{- end }}
+
+{{ partial "schema.html" . }}

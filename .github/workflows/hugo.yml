@@ -1,22 +1,57 @@
-name: Hugo site CI
+name: Build site
 
+# Builds the Hugo site (with Tailwind CSS) into docs/, which GitHub Pages serves.
 on:
   push:
-    branches: [ master ]
+    branches: [master]
+    paths-ignore: ["docs/**"]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.166.0
+      TAILWINDCSS_VERSION: 4.3.3
     steps:
-    - uses: actions/checkout@master
-    - name: Hugo Build
-      uses: klakegg/actions-hugo@1.0.0
-      with:
-        env: production
-    - name: Updating docs
-      uses: matheusalbino/git-commit@v1.0.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        message: Updating docs       
+      - uses: actions/checkout@v4
+
+      - name: Install Hugo
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/hugo.deb" \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i "$RUNNER_TEMP/hugo.deb"
+
+      - name: Install Tailwind CSS
+        run: |
+          sudo curl -fsSL -o /usr/local/bin/tailwindcss \
+            "https://github.com/tailwindlabs/tailwindcss/releases/download/v${TAILWINDCSS_VERSION}/tailwindcss-linux-x64"
+          sudo chmod +x /usr/local/bin/tailwindcss
+
+      - name: Build CSS
+        run: tailwindcss -i assets/css/main.css -o assets/css/site.css --minify
+
+      - name: Build site
+        run: hugo --gc --minify --cleanDestinationDir
+
+      - name: Commit docs
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "docs/ is up to date"
+          else
+            git commit -m "Update docs"
+            git push
+          fi

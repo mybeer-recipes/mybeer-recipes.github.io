@@ -1,0 +1,14 @@
+<nav aria-label="{{ .title }}" class="flex flex-col gap-2.5">
+  <h2 class="m-0 pb-1 text-xs font-bold tracking-[0.8px] uppercase text-night-muted">{{ .title }}</h2>
+  <ul class="m-0 flex list-none flex-col gap-2.5 p-0" role="list">
+    {{- range .items }}
+      <li><a href="{{ .URL }}" class="flex items-center gap-2 text-sm text-night-ink hover:text-night-accent">{{ .Name }}{{ if .Params.soon }}<span class="inline-flex h-[18px] items-center rounded-full bg-night-soon px-1.5 text-[10px] font-bold tracking-[0.4px] uppercase text-night-soon-ink">Soon</span>{{ end }}</a></li>
+    {{- end }}
+    {{- if .webApp }}
+      {{/* BETA: original label, restore at launch:
+      <li><a href="{{ site.Params.appURL }}" class="text-sm text-night-ink hover:text-night-accent">Web app</a></li>
+      */}}
+      <li><a href="{{ site.Params.appURL }}" class="text-sm text-night-ink hover:text-night-accent">Join the beta</a></li>
+    {{- end }}
+  </ul>
+</nav>

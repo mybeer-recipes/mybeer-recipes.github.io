@@ -1,0 +1,25 @@
+<footer class="bg-night text-night-ink">
+  <div class="container-page flex flex-col gap-12 pt-16 pb-8">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-8">
+      <div class="flex flex-col gap-3">
+        {{ partial "brand.html" (dict "dark" true) }}
+        <p class="m-0 max-w-60 text-sm leading-[1.55] text-pretty text-night-muted">Recipe design, batch tracking and inventory for homebrewers and breweries.</p>
+      </div>
+      {{ partial "footer-column.html" (dict "title" "Product" "items" site.Menus.footerproduct "webApp" true) }}
+      {{ partial "footer-column.html" (dict "title" "Resources" "items" site.Menus.footerresources) }}
+      {{ partial "footer-column.html" (dict "title" "Legal" "items" site.Menus.footerlegal) }}
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-night-line pt-6 text-[13px] text-night-muted">
+      <span>&copy; {{ now.Year }} {{ site.Copyright }}. All rights reserved.</span>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <button type="button" class="cursor-pointer border-0 bg-transparent p-0 text-[13px] text-night-muted hover:text-night-accent" data-cookie-settings>Cookie settings</button>
+        {{- range site.Params.social }}
+          {{- $name := index (split ((urls.Parse .).Host | strings.TrimPrefix "www.") ".") 0 }}
+          <a href="{{ . }}" rel="me noopener" class="text-night-muted hover:text-night-accent">{{ cond (eq $name "github") "GitHub" (title $name) }}</a>
+        {{- end }}
+        <a href="mailto:{{ site.Params.email }}" class="text-night-muted hover:text-night-accent">{{ site.Params.email }}</a>
+      </div>
+    </div>
+  </div>
+</footer>

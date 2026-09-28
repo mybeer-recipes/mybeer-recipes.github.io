@@ -1,0 +1,84 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+{{- $default := $p.defaultTier | default (index $p.tiers 0).name -}}
+<div class="container-page flex flex-col gap-12 pt-18 pb-28" data-pricing>
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <div class="flex max-w-[640px] flex-col gap-3.5">
+      <h1 class="heading-1">{{ .Title }}</h1>
+      <p class="lede">{{ $p.intro }}</p>
+    </div>
+    <div role="group" aria-label="Billing period" class="flex flex-none gap-0.5 rounded-xl bg-line-soft p-[3px] whitespace-nowrap" data-period-toggle hidden>
+      <button type="button" aria-pressed="true" data-period-button="monthly" class="h-9 cursor-pointer rounded-[9px] border-0 bg-transparent px-4 text-sm font-semibold text-ink aria-pressed:bg-white aria-pressed:ring-1 aria-pressed:ring-line">Monthly</button>
+      <button type="button" aria-pressed="false" data-period-button="yearly" class="flex h-9 cursor-pointer items-center gap-2 rounded-[9px] border-0 bg-transparent px-4 text-sm font-semibold text-ink aria-pressed:bg-white aria-pressed:ring-1 aria-pressed:ring-line">Yearly<span class="text-xs whitespace-nowrap text-ok">{{ $p.yearlyNote }}</span></button>
+    </div>
+  </div>
+
+  <fieldset class="m-0 min-w-0 border-0 p-0">
+    <legend class="sr-only">Choose a plan</legend>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] gap-4">
+      {{- range $p.tiers }}
+      {{- $id := urlize .name }}
+      <label id="tier-{{ $id }}" class="group flex cursor-pointer scroll-mt-24 flex-col gap-[18px] rounded-2xl bg-white p-6 ring-1 ring-line has-checked:shadow-card has-checked:ring-2 has-checked:ring-brand has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand">
+        <input type="radio" name="tier" value="{{ $id }}" class="sr-only" data-tier-input{{ if eq .name $default }} checked{{ end }}>
+        <span class="flex w-full items-center justify-between gap-3">
+          <span class="font-display text-[22px] font-semibold">{{ .name }}</span>
+          <span class="text-subtle group-has-checked:hidden">{{ partial "icon.html" (dict "name" "radio_button_unchecked" "class" "size-[22px]") }}</span>
+          <span class="hidden text-brand group-has-checked:inline">{{ partial "icon.html" (dict "name" "radio_button_checked" "class" "size-[22px]") }}</span>
+        </span>
+        <span class="min-h-11 text-sm leading-[1.55] text-pretty text-muted">{{ .description }}</span>
+        <span class="flex items-baseline gap-1.5" data-period="monthly">
+          <span class="font-display text-[32px] font-semibold tracking-[-0.8px]">{{ printf "$%.2f" .monthly }}</span>
+          <span class="text-sm text-muted">/ month</span>
+        </span>
+        <span class="flex items-baseline gap-1.5" data-period="yearly" hidden>
+          <span class="font-display text-[32px] font-semibold tracking-[-0.8px]">{{ .yearly | lang.FormatNumberCustom 2 | printf "$%s" }}</span>
+          <span class="text-sm text-muted">/ year</span>
+        </span>
+      </label>
+      {{- end }}
+    </div>
+  </fieldset>
+
+  {{- range $p.tiers }}
+  {{- $id := urlize .name }}
+  <section class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] items-start gap-8 rounded-[20px] bg-white p-[clamp(24px,4vw,40px)] ring-1 ring-line" data-tier-panel="{{ $id }}" aria-labelledby="tier-panel-{{ $id }}"{{ if ne .name $default }} hidden{{ end }}>
+    <div class="flex flex-col gap-3">
+      <p class="eyebrow m-0">What's included</p>
+      <h2 id="tier-panel-{{ $id }}" class="m-0 font-display text-[30px] font-semibold tracking-[-0.6px]">{{ .name }}</h2>
+      <p class="m-0 text-[15px] leading-[1.55] text-muted">{{ .description }}</p>
+      <div class="flex flex-wrap gap-2.5 pt-2">
+        <a href="{{ site.Params.appURL }}" class="btn btn-md btn-primary">Start with {{ .name }}</a>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      {{- with .includes }}
+      <ul class="m-0 list-none p-0" role="list">
+        {{- range . }}
+        <li class="flex min-h-11 items-center gap-3 border-b border-line-soft text-[15px]"><span class="text-ok-strong">{{ partial "icon.html" (dict "name" "check" "class" "size-5") }}</span>{{ . }}</li>
+        {{- end }}
+      </ul>
+      <p class="m-0 pt-3 text-[13px] text-subtle">{{ $p.includesNote }}</p>
+      {{- else }}
+      <p class="m-0 rounded-xl bg-canvas p-5 text-[15px] leading-[1.6] text-muted ring-[1.5px] ring-line ring-inset">{{ replace $p.includesPending "{name}" .name }}</p>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  <section id="faq" class="grid scroll-mt-24 grid-cols-1 gap-10 pt-6 min-[1000px]:grid-cols-3">
+    <h2 class="heading-3">{{ $p.faqTitle }}</h2>
+    <div class="flex min-w-0 flex-col min-[1000px]:col-span-2">
+      {{- range $i, $q := $p.faq }}
+      <details name="faq" class="group border-b border-line"{{ if eq $i 0 }} open{{ end }}>
+        <summary class="flex min-h-15 cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
+          <h3 class="m-0 text-base font-semibold">{{ $q.q }}</h3>
+          <span class="text-subtle group-open:hidden">{{ partial "icon.html" (dict "name" "add" "class" "size-[22px]") }}</span>
+          <span class="hidden text-subtle group-open:inline">{{ partial "icon.html" (dict "name" "remove" "class" "size-[22px]") }}</span>
+        </summary>
+        <p class="m-0 max-w-[680px] pb-5 text-[15px] leading-[1.6] text-pretty text-muted">{{ $q.a }}</p>
+      </details>
+      {{- end }}
+    </div>
+  </section>
+</div>
+{{ end }}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Locale | default "en" }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body class="flex min-h-screen flex-col">
+  <a href="#main" class="sr-only z-[100] rounded-lg bg-white px-4 py-2 font-semibold focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
+  {{ partial "header.html" . }}
+  <main id="main" class="flex-1">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+  {{ partial "cookie-banner.html" . }}
+  {{ partial "scripts.html" . }}
+</body>
+</html>

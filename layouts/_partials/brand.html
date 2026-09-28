@@ -1,0 +1,4 @@
+{{- /* Wordmark. Pass "dark" true for use on the dark footer. */ -}}
+<a href="{{ site.Home.RelPermalink }}" class="flex flex-none items-baseline font-display text-xl font-semibold tracking-[-0.4px] {{ if .dark }}text-night-ink hover:text-night-ink{{ else }}text-ink hover:text-ink{{ end }}" aria-label="{{ site.Title }} home">
+  <span>mybeer</span><span class="{{ if .dark }}text-night-accent{{ else }}text-brand{{ end }}">.recipes</span>
+</a>

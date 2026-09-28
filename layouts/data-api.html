@@ -1,0 +1,72 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+<section class="container-page flex flex-col gap-5 pt-20 pb-16">
+  <p class="m-0 flex"><span class="inline-flex h-6 items-center rounded-full bg-soon px-2.5 text-xs font-bold tracking-[0.4px] whitespace-nowrap uppercase text-soon-ink">Coming soon</span></p>
+  <h1 class="m-0 max-w-[900px] font-display text-[clamp(38px,6vw,72px)] leading-none font-semibold tracking-[-2.2px] text-balance">{{ $p.heading }}</h1>
+  <p class="m-0 max-w-[620px] text-lg leading-[1.6] text-pretty text-muted">{{ $p.intro }}</p>
+  <div class="flex flex-wrap gap-2.5 pt-1.5">
+    <a href="#access" class="btn btn-lg btn-primary">Request early access</a>
+    {{ with site.GetPage "/developers" }}<a href="{{ .RelPermalink }}" class="btn btn-lg btn-tint">Developer docs</a>{{ end }}
+  </div>
+</section>
+
+<section aria-label="Datasets" class="container-page pb-18">
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-px overflow-hidden rounded-[20px] bg-line p-0 ring-1 ring-line" role="list">
+    {{- range $p.sets }}
+    <li class="flex flex-col gap-3 bg-white px-6 py-7">
+      <span class="text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-[26px]") }}</span>
+      <h2 class="m-0 font-display text-xl font-semibold">{{ .name }}</h2>
+      <p class="m-0 text-sm leading-[1.55] text-pretty text-muted">{{ .body }}</p>
+      <code class="pt-1 font-mono text-xs text-brand">{{ .path }}</code>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+
+<section class="border-y border-line bg-white">
+  <div class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-start gap-12 py-18">
+    <div class="flex flex-col gap-5">
+      <h2 class="heading-3">{{ $p.usesTitle }}</h2>
+      {{- range $p.uses }}
+      <div class="grid grid-cols-[28px_1fr] gap-3">
+        <span class="text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-[22px]") }}</span>
+        <div class="flex flex-col gap-1">
+          <h3 class="m-0 text-base font-semibold">{{ .title }}</h3>
+          <p class="m-0 text-[15px] leading-[1.55] text-pretty text-muted">{{ .body }}</p>
+        </div>
+      </div>
+      {{- end }}
+    </div>
+    <figure class="m-0 min-w-0 overflow-hidden rounded-2xl bg-night">
+      <figcaption class="flex h-10 items-center justify-between border-b border-night-line px-4 text-xs text-night-muted">
+        <span class="font-mono">GET /v1/hops/citra</span><span>Preview</span>
+      </figcaption>
+      <pre class="m-0 overflow-x-auto px-5 py-[18px] font-mono text-[13px] leading-[1.7] text-night-ink"><code>{
+  <span class="text-night-accent">"name"</span>: <span class="text-night-ok">"Citra"</span>,
+  <span class="text-night-accent">"origin"</span>: <span class="text-night-ok">"US"</span>,
+  <span class="text-night-accent">"use"</span>: <span class="text-night-ok">"aroma"</span>,
+  <span class="text-night-accent">"alpha_acid"</span>: { <span class="text-night-accent">"min"</span>: <span class="text-night-soon-ink">11.0</span>, <span class="text-night-accent">"max"</span>: <span class="text-night-soon-ink">13.0</span> },
+  <span class="text-night-accent">"total_oil_ml_100g"</span>: <span class="text-night-soon-ink">2.2</span>
+}</code></pre>
+    </figure>
+  </div>
+</section>
+
+{{ with $p.access }}
+<section id="access" class="mx-auto flex max-w-[760px] scroll-mt-20 flex-col items-center gap-4 px-6 pt-22 pb-28 text-center">
+  <h2 class="heading-2">{{ .title }}</h2>
+  <p class="m-0 text-base leading-[1.6] text-pretty text-muted">{{ .body }}</p>
+  {{ partial "email-form.html" (dict
+    "id" "access"
+    "endpoint" site.Params.forms.dataApiAccess
+    "subject" .subject
+    "button" "Request access"
+    "placeholder" "Work email"
+    "message" true
+    "stacked" true
+    "class" "w-full max-w-[520px] pt-2 text-left"
+  ) }}
+  <p class="m-0 text-[13px] text-muted">We use your email only to contact you about the Data API. <a href="/legal/privacy/" class="font-semibold">Privacy policy</a></p>
+</section>
+{{ end }}
+{{ end }}

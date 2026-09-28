@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="container-page flex flex-col gap-10 pt-14 pb-28">
+  <header class="flex max-w-[760px] flex-col gap-3.5">
+    <a href="{{ .Parent.RelPermalink }}" class="flex items-center gap-1 self-start text-sm font-semibold">{{ partial "icon.html" (dict "name" "arrow_back" "class" "size-[18px]") }}{{ .Parent.Title }}</a>
+    <h1 class="m-0 font-display text-[clamp(34px,4.6vw,48px)] leading-[1.05] font-semibold tracking-[-1.2px] text-balance">{{ .Title }}</h1>
+    {{- if .Params.lastmod }}
+    <p class="m-0 text-sm text-muted">Last updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2 January 2006" }}</time></p>
+    {{- end }}
+  </header>
+
+  <div class="grid items-start gap-12 min-[1000px]:grid-cols-[240px_minmax(0,720px)]">
+    {{- /* Level-2 headings sit at the top of the tree, or one level down when the page has no h1. */}}
+    {{- $toc := slice }}
+    {{- range .Fragments.Headings }}
+      {{- if eq .Level 2 }}{{ $toc = $toc | append . }}{{ end }}
+      {{- range .Headings }}{{ if eq .Level 2 }}{{ $toc = $toc | append . }}{{ end }}{{ end }}
+    {{- end }}
+    {{- with $toc }}
+    <nav aria-labelledby="toc-title" class="flex flex-col gap-0.5 min-[1000px]:sticky min-[1000px]:top-[88px]">
+      <h2 id="toc-title" class="m-0 px-3 pb-2 text-xs font-bold tracking-[0.6px] uppercase text-muted">On this page</h2>
+      <ol class="m-0 flex list-none flex-col gap-0.5 p-0">
+        {{- range . }}
+        <li><a href="#{{ .ID }}" class="flex min-h-[34px] items-center rounded-lg px-3 py-1.5 text-sm text-ink hover:bg-line-soft hover:text-ink">{{ .Title | plainify }}</a></li>
+        {{- end }}
+      </ol>
+    </nav>
+    {{- end }}
+    <article class="prose min-w-0">
+      {{ .Content }}
+    </article>
+  </div>
+</div>
+{{ end }}

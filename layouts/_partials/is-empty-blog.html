@@ -1,0 +1,2 @@
+{{- /* True for the blog index while it has no published posts, so it stays out of search results. */ -}}
+{{- return (and (eq .Kind "section") (eq .Section "blog") (not .RegularPages)) -}}

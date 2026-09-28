@@ -1,0 +1,62 @@
+{{- /* Illustrations of the app for the home page feature rows. */ -}}
+{{- $d := .data -}}
+{{- $panel := "w-full max-w-[420px] overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line" -}}
+
+{{- if eq .name "fermentables" }}
+<figure class="m-0 {{ $panel }}">
+  <figcaption class="sr-only">{{ $d.label }}</figcaption>
+  <div class="flex items-center justify-between border-b border-line-soft px-[18px] py-3.5">
+    <span class="font-display text-[17px] font-semibold">Fermentables</span>
+    <span class="text-[13px] text-muted">{{ $d.total }}</span>
+  </div>
+  {{- range $d.items }}
+  <div class="grid grid-cols-[1fr_auto_52px] items-center gap-3.5 border-b border-line-soft px-[18px] py-3">
+    <div class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .meta }}</span></div>
+    <span class="font-display text-[15px] font-semibold">{{ .amount }}</span>
+    <span class="text-right text-[13px] text-muted">{{ .share }}</span>
+  </div>
+  {{- end }}
+  <div class="flex justify-between px-[18px] py-3 text-[13px] text-muted"><span>Estimated OG</span><span class="font-display font-semibold text-ink">{{ $d.og }}</span></div>
+</figure>
+
+{{- else if eq .name "brewday" }}
+<figure class="m-0 flex flex-col gap-1 p-[18px] {{ $panel }}">
+  <figcaption class="sr-only">{{ $d.label }}</figcaption>
+  <div class="flex items-center justify-between pb-2.5">
+    <span class="font-display text-[17px] font-semibold">Brew day</span>
+    <span class="flex h-6 flex-none items-center gap-1 rounded-full bg-brand-tint px-[9px] text-xs font-semibold whitespace-nowrap text-brand">{{ partial "icon.html" (dict "name" "timer" "class" "size-[15px]") }}{{ $d.remaining }}</span>
+  </div>
+  <ol class="m-0 flex list-none flex-col p-0">
+    {{- range $d.steps }}
+      {{- $style := dict
+        "done" (dict "dot" "bg-brand-tint text-brand" "icon" "check" "weight" "font-medium")
+        "now" (dict "dot" "bg-brand text-white" "icon" "local_fire_department" "weight" "font-semibold")
+        "next" (dict "dot" "bg-white text-subtle ring-[1.5px] ring-line ring-inset" "icon" "circle" "weight" "font-medium")
+      }}
+      {{- $s := index $style .state }}
+    <li class="grid min-h-11 grid-cols-[24px_1fr_auto] items-center gap-3"{{ if eq .state "now" }} aria-current="step"{{ end }}>
+      <span class="flex size-6 items-center justify-center rounded-full {{ $s.dot }}">{{ partial "icon.html" (dict "name" $s.icon "class" "size-[15px]") }}</span>
+      <span class="text-sm {{ $s.weight }}">{{ .name }}</span>
+      <span class="text-[13px] text-muted">{{ .detail }}</span>
+    </li>
+    {{- end }}
+  </ol>
+</figure>
+
+{{- else if eq .name "inventory" }}
+<figure class="m-0 {{ $panel }}">
+  <figcaption class="sr-only">{{ $d.label }}</figcaption>
+  <div class="border-b border-line-soft px-[18px] py-3.5 font-display text-[17px] font-semibold">In stock</div>
+  {{- range $d.items }}
+  <div class="grid grid-cols-[36px_1fr_auto] items-center gap-3 border-b border-line-soft px-[18px] py-3">
+    <span class="flex size-9 items-center justify-center rounded-[10px] bg-canvas text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-[19px]") }}</span>
+    <div class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .meta }}</span></div>
+    <div class="flex items-center gap-2">
+      {{- if .short }}<span class="flex h-[22px] items-center rounded-full bg-danger-tint px-2 text-xs font-semibold text-danger">Short</span>{{ end }}
+      <span class="font-display text-[15px] font-semibold">{{ .amount }}</span>
+    </div>
+  </div>
+  {{- end }}
+  <div class="flex items-center gap-1.5 px-[18px] py-3 text-[13px] font-semibold text-brand">{{ partial "icon.html" (dict "name" "shopping_cart" "class" "size-[17px]") }}{{ $d.shopping }}</div>
+</figure>
+{{- end }}

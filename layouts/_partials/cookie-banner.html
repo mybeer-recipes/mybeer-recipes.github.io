@@ -1,0 +1,11 @@
+{{- /* Shown by site.js until the visitor chooses. Analytics only load after "Accept all". */ -}}
+<div id="cookie-banner" role="dialog" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-body" class="fixed bottom-4 left-4 z-[60] flex w-[min(calc(100%-32px),400px)] flex-col gap-3.5 rounded-2xl bg-white p-5 shadow-dialog ring-1 ring-line" hidden>
+  <div class="flex flex-col gap-1.5">
+    <h2 id="cookie-banner-title" class="m-0 text-[15px] font-semibold">Cookies on this site</h2>
+    <p id="cookie-banner-body" class="m-0 text-sm leading-normal text-pretty text-muted">We use essential cookies to run the site. With your consent we'd also use analytics cookies to see which pages help. <a href="/legal/privacy/#cookies" class="font-semibold">Cookie policy</a></p>
+  </div>
+  <div class="grid grid-cols-2 gap-2">
+    <button type="button" class="btn btn-sm btn-tint" data-cookie-choice="reject">Reject all</button>
+    <button type="button" class="btn btn-sm btn-tint" data-cookie-choice="accept">Accept all</button>
+  </div>
+</div>

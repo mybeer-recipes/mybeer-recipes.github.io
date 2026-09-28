@@ -1,0 +1,25 @@
+{{- /*
+Email sign-up form. Posts to .endpoint when one is configured in params.forms;
+otherwise the button opens an email to params.email with .subject.
+Keys: id, endpoint, subject, button, placeholder, message (bool: add a text area),
+      dark (bool), stacked (bool), class.
+*/ -}}
+{{- $mailto := printf "mailto:%s?subject=%s" site.Params.email (.subject | urlquery) -}}
+{{- $field := cond .dark "h-12 min-w-[200px] flex-1 rounded-xl border-0 bg-night-field px-4 text-[15px] text-night-ink ring-1 ring-night-line-strong ring-inset outline-none placeholder:text-night-dim focus:ring-2 focus:ring-night-accent" "field min-w-[200px] flex-1" -}}
+{{- $button := cond .dark "btn btn-lg bg-night-accent text-night-accent-ink hover:bg-white hover:text-night-accent-ink" "btn btn-lg btn-primary" -}}
+{{- if .endpoint }}
+<form action="{{ .endpoint }}" method="POST" class="flex {{ if .stacked }}flex-col{{ else }}flex-wrap{{ end }} gap-2.5 {{ .class }}">
+  <label for="{{ .id }}-email" class="sr-only">Email address</label>
+  <input id="{{ .id }}-email" type="email" name="email" required autocomplete="email" placeholder="{{ .placeholder | default "you@brewery.com" }}" class="{{ $field }}">
+  {{- if .message }}
+  <label for="{{ .id }}-message" class="sr-only">What are you building?</label>
+  <textarea id="{{ .id }}-message" name="message" rows="3" placeholder="What are you building?" class="field h-auto resize-y py-3.5"></textarea>
+  {{- end }}
+  <input type="hidden" name="_subject" value="{{ .subject }}">
+  <button type="submit" class="{{ $button }}">{{ .button }}</button>
+</form>
+{{- else }}
+<div class="{{ .class }}">
+  <a href="{{ $mailto }}" class="{{ $button }}">{{ partial "icon.html" (dict "name" "mail" "class" "size-[18px]") }}{{ .button }}</a>
+</div>
+{{- end }}

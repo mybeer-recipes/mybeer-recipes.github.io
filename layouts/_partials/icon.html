@@ -1,0 +1,10 @@
+{{- /*
+Inline Material Symbols icon from assets/icons.
+Usage: {{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-5") }}
+*/ -}}
+{{- $svg := resources.Get (printf "icons/%s.svg" .name) -}}
+{{- if not $svg }}{{ errorf "icon %q not found in assets/icons" .name }}{{ end -}}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false" class="{{ .class | default "size-6" }} shrink-0">
+  {{- replaceRE `^\s*<svg[^>]*>|</svg>\s*$` "" $svg.Content | safeHTML -}}
+</svg>
+{{- /**/ -}}
