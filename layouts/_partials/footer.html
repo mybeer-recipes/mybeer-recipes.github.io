@@ -14,9 +14,10 @@
       <span>&copy; {{ now.Year }} {{ site.Copyright }}. All rights reserved.</span>
       <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
         <button type="button" class="cursor-pointer border-0 bg-transparent p-0 text-[13px] text-night-muted hover:text-night-accent" data-cookie-settings>Cookie settings</button>
+        {{- $labels := dict "bsky" "Bluesky" "github" "GitHub" }}
         {{- range site.Params.social }}
           {{- $name := index (split ((urls.Parse .).Host | strings.TrimPrefix "www.") ".") 0 }}
-          <a href="{{ . }}" rel="me noopener" class="text-night-muted hover:text-night-accent">{{ cond (eq $name "github") "GitHub" (title $name) }}</a>
+          <a href="{{ . }}" rel="me noopener" class="text-night-muted hover:text-night-accent">{{ index $labels $name | default (title $name) }}</a>
         {{- end }}
         <a href="mailto:{{ site.Params.email }}" class="text-night-muted hover:text-night-accent">{{ site.Params.email }}</a>
       </div>

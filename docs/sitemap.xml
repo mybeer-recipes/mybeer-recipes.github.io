@@ -1,1 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://mybeer.recipes/legal/privacy/</loc><lastmod>2026-09-28</lastmod></url><url><loc>https://mybeer.recipes/legal/terms/</loc><lastmod>2026-09-28</lastmod></url><url><loc>https://mybeer.recipes/legal/nda/</loc></url><url><loc>https://mybeer.recipes/legal/</loc></url><url><loc>https://mybeer.recipes/</loc></url><url><loc>https://mybeer.recipes/data-api/</loc></url><url><loc>https://mybeer.recipes/developers/</loc></url><url><loc>https://mybeer.recipes/beta/</loc></url><url><loc>https://mybeer.recipes/pricing/</loc></url><url><loc>https://mybeer.recipes/support/</loc></url></urlset>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>http://localhost:1313/legal/privacy/</loc>
+    <lastmod>2026-09-28</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:1313/legal/terms/</loc>
+    <lastmod>2026-09-28</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:1313/legal/nda/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/legal/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/data-api/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/developers/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/beta/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/pricing/</loc>
+  </url>
+  <url>
+    <loc>http://localhost:1313/support/</loc>
+  </url>
+</urlset>

@@ -70,7 +70,7 @@ params:
     # Google Analytics 4. Only loaded after the visitor accepts analytics cookies.
     measurementId: G-TFQN26BKLY
   social:
-    - https://twitter.com/MybeerRecipes
+    - https://bsky.app/profile/mybeer-recipes.bsky.social
     - https://github.com/mybeer-recipes
     - https://gitter.im/mybeer-recipes/community
 

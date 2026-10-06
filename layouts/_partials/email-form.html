@@ -5,7 +5,9 @@ beta page. While .list is empty, the button opens an email to params.email with 
 Keys: id, list, subject, button, placeholder, dark (bool), stacked (bool), class.
 */ -}}
 {{- $mailto := printf "mailto:%s?subject=%s" site.Params.email (.subject | urlquery) -}}
-{{- $field := cond .dark "h-12 min-w-[200px] flex-1 rounded-xl border-0 bg-night-field px-4 text-[15px] text-night-ink ring-1 ring-night-line-strong ring-inset outline-none placeholder:text-night-dim focus:ring-2 focus:ring-night-accent" "field min-w-[200px] flex-1" -}}
+{{- $field := cond .dark "h-12 rounded-xl border-0 bg-night-field px-4 text-[15px] text-night-ink ring-1 ring-night-line-strong ring-inset outline-none placeholder:text-night-dim focus:ring-2 focus:ring-night-accent" "field" -}}
+{{- /* flex-1 sets a zero height basis in a stacked (column) form and squashes the field. */}}
+{{- if not .stacked }}{{ $field = printf "%s min-w-[200px] flex-1" $field }}{{ end -}}
 {{- $button := cond .dark "btn btn-lg bg-night-accent text-night-accent-ink hover:bg-white hover:text-night-accent-ink" "btn btn-lg btn-primary" -}}
 {{- if .list }}
 {{- $lm := strings.TrimSuffix "/" site.Params.listmonk.url }}
