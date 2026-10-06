@@ -50,11 +50,11 @@ params:
     lists:
       # Lists → (list) → UUID. Both start as the default "Opt-in list"; create
       # "Beta – Homebrewers" and "Beta – Breweries" lists to split them.
-      homebrewer: cb487593-d517-49ee-99d5-a06bb7cb5892
-      brewery: cb487593-d517-49ee-99d5-a06bb7cb5892
+      homebrewer: 72ad3e3f-1d05-4688-8244-91027c0a6949
+      brewery: 9225b237-27e9-437c-b660-5a940336c14e
       # Product news list for the "Also send me product news" box. The box is
       # hidden while this and signupEndpoint are both empty.
-      news: ""
+      news: c935bec5-f00a-4a58-9207-d7cd50db461a
     # Optional: URL of the workers/beta-signup Cloudflare Worker. When set, sign-ups
     # go through it so the brewery name and devices are stored on the subscriber.
     signupEndpoint: ""
