@@ -15,8 +15,8 @@ hero:
     package, and track every lot of malt, hops and yeast, synced across your
     phone, desktop and the web.
   # Add a photo from assets/images to replace the striped placeholder.
-  image: ""
-  imageAlt: ""
+  image: images/beer-taps.jpg
+  imageAlt: A row of chrome beer taps along a bar wall
   recipe:
     name: Harbour Light Pale Ale
     meta: American Pale Ale · All grain · 23 L
@@ -116,16 +116,16 @@ audiences:
       copy one into your library to make it your own.
     link: Nano from $4.99 a month
     # Add a photo from assets/images to replace the striped placeholder.
-    image: ""
-    imageAlt: ""
+    image: images/homebrew-setup.jpg
+    imageAlt: Three stainless steel brewing kettles linked by a valve manifold on a workbench
   - title: For breweries
     body: >-
       Run several brewhouses and locations from one account. Give each team
       member a role, keep a stock ledger across sites, and see every batch in
       progress, from a taproom to contract production.
     link: Micro to Macro plans
-    image: ""
-    imageAlt: ""
+    image: images/brewery-fermenters.jpg
+    imageAlt: A row of numbered stainless steel conical fermenters in a brewery cellar
 
 download:
   title: On every device you brew with
