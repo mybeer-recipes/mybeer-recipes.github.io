@@ -8,7 +8,7 @@
       <p class="m-0 max-w-[520px] text-[17px] leading-[1.6] text-pretty text-night-muted">{{ $p.intro }}</p>
       {{ partial "email-form.html" (dict
         "id" "waitlist"
-        "endpoint" site.Params.forms.developersWaitlist
+        "list" site.Params.listmonk.lists.developers
         "subject" $p.waitlist.subject
         "button" $p.waitlist.button
         "dark" true

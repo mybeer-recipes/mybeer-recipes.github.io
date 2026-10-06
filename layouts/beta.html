@@ -21,12 +21,11 @@
     </ul>
   </div>
 
-  <div class="rounded-[20px] bg-white p-[clamp(24px,4vw,36px)] shadow-[0_8px_24px_rgba(26,28,28,0.06)] ring-1 ring-line">
+  <div class="rounded-[20px] bg-white p-[clamp(24px,4vw,36px)] shadow-[0_8px_24px_rgba(26,28,28,0.06)] ring-1 ring-line" data-signup>
     {{- /* Without JavaScript this posts to listmonk's own subscription form, which shows
          listmonk's confirmation page. site.js submits it in place when it can. */}}
     <form action="{{ strings.TrimSuffix "/" $lm.url }}/subscription/form" method="post"
       class="group/beta flex flex-col gap-[22px]"
-      data-beta-form
       data-api="{{ strings.TrimSuffix "/" $lm.url }}/api/public/subscription"
       {{- with $lm.signupEndpoint }} data-endpoint="{{ . }}"{{ end }}>
       <h2 class="m-0 font-display text-[22px] font-semibold">{{ $p.form.title }}</h2>
@@ -83,16 +82,16 @@
       <input type="text" name="nonce" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] size-px opacity-0">
 
       <button type="submit" class="btn h-12 rounded-xl text-[15px] btn-primary disabled:cursor-wait disabled:opacity-70">{{ $p.form.button }}</button>
-      <p class="m-0 text-[13px] text-danger" role="alert" data-beta-error hidden>Something went wrong sending your details. Try again, or email <a href="mailto:{{ site.Params.email }}" class="font-semibold">{{ site.Params.email }}</a>.</p>
+      <p class="m-0 text-[13px] text-danger" role="alert" data-signup-error hidden>Something went wrong sending your details. Try again, or email <a href="mailto:{{ site.Params.email }}" class="font-semibold">{{ site.Params.email }}</a>.</p>
       <p class="m-0 text-[13px] leading-normal text-pretty text-muted">{{ cond $showNews $p.form.noteWithNews $p.form.note }} <a href="/legal/privacy/" class="font-semibold">Privacy policy</a></p>
     </form>
 
-    <div class="flex flex-col gap-4 py-3" data-beta-sent tabindex="-1" hidden>
+    <div class="flex flex-col gap-4 py-3" data-signup-sent tabindex="-1" hidden>
       <span class="flex size-[52px] items-center justify-center rounded-[14px] bg-ok-tint text-ok">{{ partial "icon.html" (dict "name" "mark_email_read" "class" "size-7") }}</span>
       <h2 class="m-0 font-display text-[26px] font-semibold tracking-[-0.4px]">{{ $p.sent.title }}</h2>
-      {{- $body := replace (htmlEscape $p.sent.body) "{email}" `<strong class="text-ink" data-beta-email></strong>` }}
+      {{- $body := replace (htmlEscape $p.sent.body) "{email}" `<strong class="text-ink" data-signup-email></strong>` }}
       <p class="m-0 text-[15px] leading-[1.6] text-pretty text-muted">{{ $body | safeHTML }}</p>
-      <button type="button" class="btn btn-sm btn-tint self-start" data-beta-reset>Use a different email</button>
+      <button type="button" class="btn btn-sm btn-tint self-start" data-signup-reset>Use a different email</button>
     </div>
   </div>
 </div>

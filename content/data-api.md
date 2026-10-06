@@ -23,7 +23,7 @@ uses:
 access:
   title: Early access
   body: >-
-    Pricing and limits will be announced before launch. Tell us what you're
-    building and we'll invite you as access opens.
+    Pricing and limits will be announced before launch. Join the list and
+    we'll invite you as access opens.
   subject: mybeer.recipes Data API early access
 ---

@@ -61,7 +61,7 @@
     </div>
     {{ partial "email-form.html" (dict
       "id" "newsletter"
-      "endpoint" site.Params.forms.newsletter
+      "list" site.Params.listmonk.lists.blog
       "subject" .subject
       "button" .button
       "class" "max-w-[460px] min-w-[260px] flex-1"

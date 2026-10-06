@@ -58,11 +58,10 @@
   <p class="m-0 text-base leading-[1.6] text-pretty text-muted">{{ .body }}</p>
   {{ partial "email-form.html" (dict
     "id" "access"
-    "endpoint" site.Params.forms.dataApiAccess
+    "list" site.Params.listmonk.lists.dataApi
     "subject" .subject
     "button" "Request access"
     "placeholder" "Work email"
-    "message" true
     "stacked" true
     "class" "w-full max-w-[520px] pt-2 text-left"
   ) }}

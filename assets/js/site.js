@@ -165,23 +165,24 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
   );
 })();
 
-// Beta sign-up: submit to listmonk (or the optional sign-up Worker) in place and
-// show the "check your inbox" state. If the request can't be made from this page
-// (for example, listmonk doesn't allow this site under Trusted URLs), fall back to
-// posting the form normally, which shows listmonk's own confirmation page.
-(() => {
-  const form = $("[data-beta-form]");
-  if (!form) return;
-  const sent = $("[data-beta-sent]");
-  const error = $("[data-beta-error]");
+// listmonk sign-ups (the beta page, the blog and the waitlists): submit in place
+// and show the "check your inbox" state. The beta form can go through the optional
+// sign-up Worker instead. If the request can't be made from this page (for example,
+// listmonk doesn't allow this site under Trusted URLs), fall back to posting the
+// form normally, which shows listmonk's own confirmation page.
+$$("[data-signup]").forEach((root) => {
+  const form = $("form", root);
+  const sent = $("[data-signup-sent]", root);
+  const error = $("[data-signup-error]", root);
   const button = $('button[type="submit"]', form);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = new FormData(form);
     const email = String(data.get("email")).trim();
+    const name = String(data.get("name") ?? "").trim();
     const showSent = () => {
-      $("[data-beta-email]", sent).textContent = email;
+      $("[data-signup-email]", sent).textContent = email;
       form.hidden = true;
       sent.hidden = false;
       sent.focus();
@@ -190,23 +191,21 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
     // Bots fill the honeypot; pretend it worked.
     if (data.get("nonce")) return showSent();
 
-    const kind = $("[data-kind]:checked", form);
-    const news = $("[data-news]", form)?.checked || false;
     const endpoint = form.dataset.endpoint;
-    const body = endpoint
-      ? {
-          email,
-          name: String(data.get("name")).trim(),
-          kind: kind.dataset.kind,
-          brewery: kind.dataset.kind === "Brewery" ? String(data.get("brewery")).trim() : "",
-          devices: data.getAll("devices"),
-          news,
-        }
-      : {
-          email,
-          name: String(data.get("name")).trim(),
-          list_uuids: [...new Set(data.getAll("l").filter(Boolean))],
-        };
+    let body;
+    if (endpoint) {
+      const kind = $("[data-kind]:checked", form);
+      body = {
+        email,
+        name,
+        kind: kind.dataset.kind,
+        brewery: kind.dataset.kind === "Brewery" ? String(data.get("brewery")).trim() : "",
+        devices: data.getAll("devices"),
+        news: $("[data-news]", form)?.checked || false,
+      };
+    } else {
+      body = { email, name, list_uuids: [...new Set(data.getAll("l").filter(Boolean))] };
+    }
 
     button.disabled = true;
     error.hidden = true;
@@ -228,10 +227,10 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
     else error.hidden = false;
   });
 
-  $("[data-beta-reset]", sent).addEventListener("click", () => {
+  $("[data-signup-reset]", sent).addEventListener("click", () => {
     form.reset();
     sent.hidden = true;
     form.hidden = false;
     $('input[name="email"]', form).focus();
   });
-})();
+});

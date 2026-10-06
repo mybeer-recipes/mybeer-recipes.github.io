@@ -1,10 +1,21 @@
-# Setting up listmonk for beta sign-ups
+# Setting up listmonk for sign-ups
 
-The beta page at [mybeer.recipes/beta/](https://mybeer.recipes/beta/) adds
-people to lists in listmonk at <https://listmonk.mybeer.recipes>. listmonk then
-emails them a link to confirm (double opt-in).
+These forms add people to lists in listmonk at
+<https://listmonk.mybeer.recipes>. listmonk then emails them a link to confirm
+(double opt-in).
 
-There are two ways to connect them. Start with **Option 1**, and add **Option 2**
+| Form | Page | List |
+| --- | --- | --- |
+| Request an invite | [/beta/](https://mybeer.recipes/beta/) | Beta – Homebrewers or Beta – Breweries, plus Product news if ticked |
+| Get new posts by email | [/blog/](https://mybeer.recipes/blog/) | Blog |
+| Join the waitlist | [/developers/](https://mybeer.recipes/developers/) | Developer API waitlist |
+| Request access | [/data-api/](https://mybeer.recipes/data-api/#access) | Data API early access |
+
+The blog, developers and Data API forms only ask for an email address. Until
+their list is set in `config.yaml`, their buttons open an email to
+`support@mybeer.recipes` instead.
+
+For the beta page there are two ways to connect it. Start with **Option 1**, and add **Option 2**
 later if you want to keep more of what people enter.
 
 | | Option 1: listmonk only | Option 2: with the sign-up Worker |
@@ -39,13 +50,13 @@ In **Settings → Security → Trusted URLs**, add this on its own line:
 https://mybeer.recipes
 ```
 
-Save. This lets the beta page submit the form in place and show its own
+Save. This lets the site's forms submit in place and show its own
 "Check your inbox" message. Without it, sign-ups still work, but people are
 taken to listmonk's own confirmation page instead.
 
 > **Leave "Enable CAPTCHA" off.** listmonk's CAPTCHA applies to its own form
-> page, which the beta page uses when it can't submit in place (for example,
-> with JavaScript turned off). The beta page has no CAPTCHA widget, so turning
+> page, which the site's forms use when they can't submit in place (for example,
+> with JavaScript turned off). The site's forms have no CAPTCHA widget, so turning
 > it on would reject those sign-ups. The double opt-in email already stops
 > spam sign-ups from getting mail.
 
@@ -58,6 +69,9 @@ In **Lists → + New**, create each of these:
 | Beta – Homebrewers | Public | Double opt-in |
 | Beta – Breweries | Public | Double opt-in |
 | Product news *(optional)* | Public | Double opt-in |
+| Blog | Public | Double opt-in |
+| Developer API waitlist | Public | Double opt-in |
+| Data API early access | Public | Double opt-in |
 
 The lists must be **Public**: listmonk won't let the public sign-up form add
 anyone to a private list.
@@ -77,11 +91,15 @@ In `config.yaml`, under `params.listmonk.lists`:
       homebrewer: <UUID of "Beta – Homebrewers">
       brewery: <UUID of "Beta – Breweries">
       news: <UUID of "Product news">   # or "" to hide the product news box
+      blog: <UUID of "Blog">
+      developers: <UUID of "Developer API waitlist">
+      dataApi: <UUID of "Data API early access">
     signupEndpoint: ""
 ```
 
 The "Also send me product news" box only appears on the beta page when `news`
-is set (or when the Worker is set up, see Option 2).
+is set (or when the Worker is set up, see Option 2). Leave `blog`, `developers`
+or `dataApi` as `""` to keep that form's button opening an email instead.
 
 Commit and push. The GitHub workflow rebuilds the site.
 
@@ -94,7 +112,11 @@ Commit and push. The GitHub workflow rebuilds the site.
 3. The subscriber shows up in **Subscribers**. Their "Beta – Breweries"
    subscription stays *unconfirmed* until you click the link in the email.
 4. Click the link. The subscription changes to *confirmed*.
-5. Delete the test subscriber.
+5. Repeat with the forms on [/blog/](https://mybeer.recipes/blog/),
+   [/developers/](https://mybeer.recipes/developers/) and
+   [/data-api/](https://mybeer.recipes/data-api/#access). Each should show
+   **Check your inbox** under the form and add the subscriber to its own list.
+6. Delete the test subscriber.
 
 ---
 
@@ -121,7 +143,9 @@ subscriber's attributes:
 listmonk still sends the confirmation email. If the Worker can't be reached,
 the beta page falls back to Option 1, so no sign-ups are lost.
 
-Do Option 1 first: the Worker uses the same lists and settings.
+Do Option 1 first: the Worker uses the same lists and settings. The Worker is
+only used by the beta page; the blog, developers and Data API forms always go
+straight to listmonk.
 
 ### 1. Create roles for the API user
 
@@ -194,7 +218,8 @@ subscribers.attribs->'beta'->'devices' ? 'Android'
 ```
 
 With Option 1 only, filter by list instead: pick "Beta – Breweries" in the list
-filter.
+filter. The same goes for the blog and waitlist sign-ups: pick "Blog",
+"Developer API waitlist" or "Data API early access".
 
 To send beta invites, create a campaign for the beta lists. Campaigns to double
 opt-in lists only go to subscribers who confirmed.
@@ -212,7 +237,9 @@ opt-in lists only go to subscribers who confirmed.
 
 | What you see | Likely cause |
 | --- | --- |
+| A form's button opens an email instead of showing an email field | Its list in `config.yaml` (`blog`, `developers` or `dataApi`) is empty |
 | listmonk's own page opens after signing up | `https://mybeer.recipes` is missing from **Trusted URLs** |
 | "No valid lists selected to subscribe" | A list UUID in `config.yaml` is wrong, or the list is private |
 | No confirmation email | **Send opt-in confirmation** is off, the list is single opt-in, or SMTP isn't working |
+| "Something went wrong" under a form | listmonk rejected the sign-up. Check the list UUID and that the list is public. On the beta page with Option 2, see the next row |
 | "Something went wrong" on the beta page (Option 2) | Check the Worker's logs with `npx wrangler tail`. Usually a wrong token, or the API user's list role is missing a beta list |

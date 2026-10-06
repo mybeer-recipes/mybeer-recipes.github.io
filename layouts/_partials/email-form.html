@@ -1,23 +1,35 @@
 {{- /*
-Email sign-up form. Posts to .endpoint when one is configured in params.forms;
-otherwise the button opens an email to params.email with .subject.
-Keys: id, endpoint, subject, button, placeholder, message (bool: add a text area),
-      dark (bool), stacked (bool), class.
+Email sign-up form. With .list (a listmonk list UUID from params.listmonk.lists) it
+subscribes people to that list, and listmonk emails them a link to confirm, like the
+beta page. While .list is empty, the button opens an email to params.email with .subject.
+Keys: id, list, subject, button, placeholder, dark (bool), stacked (bool), class.
 */ -}}
 {{- $mailto := printf "mailto:%s?subject=%s" site.Params.email (.subject | urlquery) -}}
 {{- $field := cond .dark "h-12 min-w-[200px] flex-1 rounded-xl border-0 bg-night-field px-4 text-[15px] text-night-ink ring-1 ring-night-line-strong ring-inset outline-none placeholder:text-night-dim focus:ring-2 focus:ring-night-accent" "field min-w-[200px] flex-1" -}}
 {{- $button := cond .dark "btn btn-lg bg-night-accent text-night-accent-ink hover:bg-white hover:text-night-accent-ink" "btn btn-lg btn-primary" -}}
-{{- if .endpoint }}
-<form action="{{ .endpoint }}" method="POST" class="flex {{ if .stacked }}flex-col{{ else }}flex-wrap{{ end }} gap-2.5 {{ .class }}">
-  <label for="{{ .id }}-email" class="sr-only">Email address</label>
-  <input id="{{ .id }}-email" type="email" name="email" required autocomplete="email" placeholder="{{ .placeholder | default "you@brewery.com" }}" class="{{ $field }}">
-  {{- if .message }}
-  <label for="{{ .id }}-message" class="sr-only">What are you building?</label>
-  <textarea id="{{ .id }}-message" name="message" rows="3" placeholder="What are you building?" class="field h-auto resize-y py-3.5"></textarea>
-  {{- end }}
-  <input type="hidden" name="_subject" value="{{ .subject }}">
-  <button type="submit" class="{{ $button }}">{{ .button }}</button>
-</form>
+{{- if .list }}
+{{- $lm := strings.TrimSuffix "/" site.Params.listmonk.url }}
+<div class="flex flex-col gap-2.5 {{ .class }}" data-signup>
+  {{- /* Without JavaScript this posts to listmonk's own subscription form, which shows
+       listmonk's confirmation page. site.js submits it in place when it can. */}}
+  <form action="{{ $lm }}/subscription/form" method="post" data-api="{{ $lm }}/api/public/subscription"
+    class="flex {{ if .stacked }}flex-col{{ else }}flex-wrap{{ end }} gap-2.5">
+    <label for="{{ .id }}-email" class="sr-only">Email address</label>
+    <input id="{{ .id }}-email" type="email" name="email" required autocomplete="email" placeholder="{{ .placeholder | default "you@brewery.com" }}" class="{{ $field }}">
+    <input type="hidden" name="l" value="{{ .list }}">
+    {{- /* Honeypot: listmonk rejects the sign-up if this is filled in. */}}
+    <input type="text" name="nonce" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] size-px opacity-0">
+    <button type="submit" class="{{ $button }} disabled:cursor-wait disabled:opacity-70">{{ .button }}</button>
+  </form>
+  <p class="m-0 text-[13px] {{ cond .dark "text-night-danger" "text-danger" }}" role="alert" data-signup-error hidden>Something went wrong. Try again, or email <a href="mailto:{{ site.Params.email }}" class="font-semibold">{{ site.Params.email }}</a>.</p>
+  <div class="flex flex-col items-start gap-2 text-left" data-signup-sent tabindex="-1" hidden>
+    <p class="m-0 flex items-center gap-2 text-base font-semibold {{ cond .dark "text-night-ink" "text-ink" }}">
+      <span class="{{ cond .dark "text-night-ok" "text-ok" }}">{{ partial "icon.html" (dict "name" "mark_email_read" "class" "size-[22px]") }}</span>Check your inbox
+    </p>
+    <p class="m-0 text-sm leading-[1.55] text-pretty {{ cond .dark "text-night-muted" "text-muted" }}">We sent a link to <strong class="{{ cond .dark "text-night-ink" "text-ink" }}" data-signup-email></strong>. Click it to confirm your subscription.</p>
+    <button type="button" class="cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold {{ cond .dark "text-night-accent" "text-brand" }}" data-signup-reset>Use a different email</button>
+  </div>
+</div>
 {{- else }}
 <div class="{{ .class }}">
   <a href="{{ $mailto }}" class="{{ $button }}">{{ partial "icon.html" (dict "name" "mail" "class" "size-[18px]") }}{{ .button }}</a>
