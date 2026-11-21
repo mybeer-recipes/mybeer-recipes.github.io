@@ -9,9 +9,10 @@ These forms add people to lists in listmonk at
 | Request an invite | [/beta/](https://mybeer.recipes/beta/) | Beta – Homebrewers or Beta – Breweries, plus Product news if ticked |
 | Get new posts by email | [/blog/](https://mybeer.recipes/blog/) | Blog |
 | Join the waitlist | [/developers/](https://mybeer.recipes/developers/) | Developer API waitlist |
-| Request access | [/data-api/](https://mybeer.recipes/data-api/#access) | Data API early access |
+| Request access | [/suppliers/](https://mybeer.recipes/suppliers/#access) | Suppliers early access |
+| Request access | /data-api/ (page hidden for now) | Data API early access |
 
-The blog, developers and Data API forms only ask for an email address. Until
+The blog, developers, suppliers and Data API forms only ask for an email address. Until
 their list is set in `config.yaml`, their buttons open an email to
 `support@mybeer.recipes` instead.
 
@@ -71,7 +72,8 @@ In **Lists → + New**, create each of these:
 | Product news *(optional)* | Public | Double opt-in |
 | Blog | Public | Double opt-in |
 | Developer API waitlist | Public | Double opt-in |
-| Data API early access | Public | Double opt-in |
+| Suppliers early access | Public | Double opt-in |
+| Data API early access *(page hidden)* | Public | Double opt-in |
 
 The lists must be **Public**: listmonk won't let the public sign-up form add
 anyone to a private list.
@@ -94,12 +96,13 @@ In `config.yaml`, under `params.listmonk.lists`:
       blog: <UUID of "Blog">
       developers: <UUID of "Developer API waitlist">
       dataApi: <UUID of "Data API early access">
+      suppliers: <UUID of "Suppliers early access">
     signupEndpoint: ""
 ```
 
 The "Also send me product news" box only appears on the beta page when `news`
-is set (or when the Worker is set up, see Option 2). Leave `blog`, `developers`
-or `dataApi` as `""` to keep that form's button opening an email instead.
+is set (or when the Worker is set up, see Option 2). Leave `blog`, `developers`,
+`suppliers` or `dataApi` as `""` to keep that form's button opening an email instead.
 
 Commit and push. The GitHub workflow rebuilds the site.
 
@@ -114,7 +117,7 @@ Commit and push. The GitHub workflow rebuilds the site.
 4. Click the link. The subscription changes to *confirmed*.
 5. Repeat with the forms on [/blog/](https://mybeer.recipes/blog/),
    [/developers/](https://mybeer.recipes/developers/) and
-   [/data-api/](https://mybeer.recipes/data-api/#access). Each should show
+   [/suppliers/](https://mybeer.recipes/suppliers/#access). Each should show
    **Check your inbox** under the form and add the subscriber to its own list.
 6. Delete the test subscriber.
 
@@ -144,7 +147,7 @@ listmonk still sends the confirmation email. If the Worker can't be reached,
 the beta page falls back to Option 1, so no sign-ups are lost.
 
 Do Option 1 first: the Worker uses the same lists and settings. The Worker is
-only used by the beta page; the blog, developers and Data API forms always go
+only used by the beta page; the blog, developers, suppliers and Data API forms always go
 straight to listmonk.
 
 ### 1. Create roles for the API user
@@ -219,7 +222,7 @@ subscribers.attribs->'beta'->'devices' ? 'Android'
 
 With Option 1 only, filter by list instead: pick "Beta – Breweries" in the list
 filter. The same goes for the blog and waitlist sign-ups: pick "Blog",
-"Developer API waitlist" or "Data API early access".
+"Developer API waitlist", "Suppliers early access" or "Data API early access".
 
 To send beta invites, create a campaign for the beta lists. Campaigns to double
 opt-in lists only go to subscribers who confirmed.
@@ -237,7 +240,7 @@ opt-in lists only go to subscribers who confirmed.
 
 | What you see | Likely cause |
 | --- | --- |
-| A form's button opens an email instead of showing an email field | Its list in `config.yaml` (`blog`, `developers` or `dataApi`) is empty |
+| A form's button opens an email instead of showing an email field | Its list in `config.yaml` (`blog`, `developers`, `suppliers` or `dataApi`) is empty |
 | listmonk's own page opens after signing up | `https://mybeer.recipes` is missing from **Trusted URLs** |
 | "No valid lists selected to subscribe" | A list UUID in `config.yaml` is wrong, or the list is private |
 | No confirmation email | **Send opt-in confirmation** is off, the list is single opt-in, or SMTP isn't working |

@@ -3,12 +3,12 @@ title: Pricing
 layout: pricing
 description: >-
   mybeer.recipes plans from $4.99 a month for homebrewers to $199.99 for
-  national producers. Six tiers, billed through the App Store, Google Play or
-  Microsoft Store, cancel any time.
+  national producers. Six tiers, billed through the App Store or Google Play,
+  cancel any time.
 intro: >-
   Pick the tier that matches the size of your brewery. Subscriptions are billed
-  through the App Store, Google Play or Microsoft Store account you sign in
-  with, and you can cancel any time there.
+  through the App Store or Google Play account you subscribe with, and you can
+  cancel any time there.
 currency: USD
 defaultTier: Micro
 yearlyNote: 2 months free
@@ -51,8 +51,8 @@ faqTitle: Questions about billing
 faq:
   - q: How am I billed?
     a: >-
-      Through the store you subscribe in: the App Store, Google Play or the
-      Microsoft Store. Prices shown are in US dollars; your store shows the
+      Through the store you subscribe in: the App Store or Google Play. Prices
+      shown are in US dollars; your store shows the
       price in your currency, including any VAT.
   - q: Can I change tier later?
     a: >-

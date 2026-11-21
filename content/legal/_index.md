@@ -6,5 +6,6 @@ intro: The terms that apply when you use mybeer.recipes, and how we handle your 
 # Register and VAT ID as they apply; the section is hidden if this list is empty.
 imprint:
   - { label: Operated by, value: Ross Merrigan }
-  - { label: Email, value: support@mybeer.recipes }
+  - { label: Based in, value: Switzerland }
+  - { label: Email, value: legal@mybeer.recipes }
 ---

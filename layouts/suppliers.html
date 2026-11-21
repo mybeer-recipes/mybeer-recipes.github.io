@@ -1,0 +1,99 @@
+{{ define "main" }}
+{{- $p := .Params -}}
+<section class="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,440px),1fr))] items-center gap-12 pt-20 pb-16">
+  <div class="flex flex-col gap-5">
+    <p class="m-0 flex flex-wrap items-center gap-2">
+      <span class="inline-flex h-6 items-center rounded-full bg-ok-tint px-2.5 text-xs font-bold tracking-[0.4px] whitespace-nowrap uppercase text-ok">{{ $p.badge }}</span>
+      <span class="text-sm font-semibold text-muted">{{ $p.app }}</span>
+    </p>
+    <h1 class="m-0 max-w-[640px] font-display text-[clamp(38px,5.6vw,64px)] leading-[1.02] font-semibold tracking-[-2px] text-balance">{{ $p.heading }}</h1>
+    <p class="m-0 max-w-[560px] text-lg leading-[1.6] text-pretty text-muted">{{ $p.intro }}</p>
+    <div class="flex flex-wrap gap-2.5 pt-1.5">
+      <a href="#access" class="btn btn-lg btn-primary">Request early access</a>
+      <a href="#brewers" class="btn btn-lg btn-tint">What brewers see</a>
+    </div>
+  </div>
+
+  {{/* An illustration of the console's overview, drawn after its light theme and green accent. */}}
+  {{ with $p.preview }}
+  <figure class="m-0 min-w-0 overflow-hidden rounded-2xl bg-canvas shadow-float ring-1 ring-line">
+    <figcaption class="sr-only">{{ .label }}</figcaption>
+    <div class="flex items-center gap-3 border-b border-line bg-white px-4 py-3">
+      <span class="flex size-8 items-center justify-center rounded-lg bg-ok-strong text-white">{{ partial "icon.html" (dict "name" "inventory_2" "class" "size-[18px]") }}</span>
+      <span class="flex min-w-0 flex-col">
+        <span class="text-sm font-semibold">{{ $p.app }}</span>
+        <span class="text-xs text-muted">{{ .company }} · Owner</span>
+      </span>
+    </div>
+    <div class="flex flex-col gap-4 p-4">
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-display text-xl font-semibold">Overview</span>
+        <span class="flex h-7 items-center rounded-lg bg-white px-2.5 text-xs font-semibold ring-1 ring-line">{{ .period }}</span>
+      </div>
+      <dl class="m-0 grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2.5">
+        {{- range .kpis }}
+        <div class="flex flex-col gap-1 rounded-xl bg-white p-3 ring-1 ring-line">
+          <dt class="text-[10px] font-bold tracking-[0.5px] uppercase text-muted">{{ .label }}</dt>
+          <dd class="m-0 font-display text-2xl leading-none font-semibold">{{ .value }}</dd>
+          <dd class="m-0 text-[11px] font-semibold text-ok">{{ .change }}</dd>
+        </div>
+        {{- end }}
+      </dl>
+      <div class="overflow-hidden rounded-xl bg-white ring-1 ring-line">
+        <div class="flex justify-between border-b border-line-soft bg-line-soft px-3 py-2 text-[11px] font-semibold text-muted"><span>Top products</span><span>In recipes</span></div>
+        {{- range .products }}
+        <div class="flex items-center gap-2.5 border-b border-line-soft px-3 py-2.5 text-[13px] last:border-b-0">
+          <span class="text-ok-strong">{{ partial "icon.html" (dict "name" .icon "class" "size-4") }}</span>
+          <span class="flex-1 font-semibold">{{ .name }}</span>
+          <span class="font-display font-semibold">{{ .recipes }}</span>
+        </div>
+        {{- end }}
+      </div>
+    </div>
+  </figure>
+  {{ end }}
+</section>
+
+<section aria-label="Features" class="container-page pb-18">
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-px overflow-hidden rounded-[20px] bg-line p-0 ring-1 ring-line" role="list">
+    {{- range $p.features }}
+    <li class="flex flex-col gap-2.5 bg-white p-6">
+      <span class="text-ok-strong">{{ partial "icon.html" (dict "name" .icon "class" "size-6") }}</span>
+      <h2 class="m-0 text-base font-semibold">{{ .title }}</h2>
+      <p class="m-0 text-sm leading-[1.55] text-pretty text-muted">{{ .body }}</p>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+
+{{ with $p.brewers }}
+<section id="brewers" class="scroll-mt-20 border-y border-line bg-white">
+  <div class="container-page flex flex-col gap-6 py-18">
+    <h2 class="heading-3">{{ .title }}</h2>
+    <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-x-8 gap-y-4 p-0" role="list">
+      {{- range .items }}
+      <li class="grid grid-cols-[24px_1fr] gap-3 text-[15px] leading-[1.55] text-pretty">
+        <span class="text-ok">{{ partial "icon.html" (dict "name" "check_circle" "class" "size-[22px]") }}</span>{{ . }}
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.access }}
+<section id="access" class="mx-auto flex max-w-[760px] scroll-mt-20 flex-col items-center gap-4 px-6 pt-22 pb-28 text-center">
+  <h2 class="heading-2">{{ .title }}</h2>
+  <p class="m-0 text-base leading-[1.6] text-pretty text-muted">{{ .body }}</p>
+  {{ partial "email-form.html" (dict
+    "id" "access"
+    "list" site.Params.listmonk.lists.suppliers
+    "subject" .subject
+    "button" "Request access"
+    "stacked" true
+    "class" "w-full max-w-[520px] pt-2 text-left"
+  ) }}
+  <p class="m-0 text-[13px] text-muted">We use your email only to contact you about {{ $p.app }}. <a href="/legal/privacy/" class="font-semibold">Privacy policy</a></p>
+</section>
+{{ end }}
+{{ end }}

@@ -56,12 +56,15 @@ params:
       # Product news list for the "Also send me product news" box. The box is
       # hidden while this and signupEndpoint are both empty.
       news: c935bec5-f00a-4a58-9207-d7cd50db461a
-      # Lists for the blog's Subscribe form, the Developers page waitlist and
-      # the Data API early access form. While one is empty, that form's button
-      # opens an email to params.email instead.
+      # Lists for the blog's Subscribe form, the Developers page waitlist, the
+      # Data API early access form (page hidden for now) and the MyBeer
+      # Ingredients early access form on /suppliers/. While one is empty, that
+      # form's button opens an email to params.email instead.
       blog: 7cbc2e18-0f6c-43d7-a01e-0fe12f7d3ff8
       developers: 12ab44db-1f17-403d-8b05-cadde02805fe
       dataApi: bb83e6cf-c4c9-4f84-b75a-77bb77ac4c7a
+      # Create a public, double opt-in "Suppliers early access" list.
+      suppliers: ""
     # Optional: URL of the workers/beta-signup Cloudflare Worker. When set, sign-ups
     # go through it so the brewery name and devices are stored on the subscriber.
     signupEndpoint: ""
@@ -106,6 +109,9 @@ menus:
     - name: Download
       url: /#download
       weight: 30
+    - name: For suppliers
+      pageRef: /suppliers
+      weight: 40
 
   footerResources:
     - name: Support
@@ -119,11 +125,6 @@ menus:
     - name: API docs
       pageRef: /developers
       weight: 30
-      params:
-        soon: true
-    - name: Data API
-      pageRef: /data-api
-      weight: 40
       params:
         soon: true
 

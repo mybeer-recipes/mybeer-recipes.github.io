@@ -13,7 +13,9 @@ Page copy lives in Markdown front matter under `content/`:
 | Home | `content/_index.md` |
 | Pricing (tiers, FAQ) | `content/pricing.md` |
 | Support | `content/support.md` |
-| Developers, Data API | `content/developers.md`, `content/data-api.md` |
+| Developers | `content/developers.md` |
+| For suppliers (MyBeer Ingredients) | `content/suppliers.md` |
+| Data API (hidden, `draft: true`) | `content/data-api.md` |
 | Blog posts | `content/blog/*.md` (remove `draft: true` to publish) |
 | Legal documents, imprint | `content/legal/` |
 | Beta sign-up | `content/beta.md` |

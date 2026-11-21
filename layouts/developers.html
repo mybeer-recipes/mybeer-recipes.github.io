@@ -64,13 +64,13 @@
   </dl>
 </section>
 
-{{ with site.GetPage "/data-api" }}
+{{ with site.GetPage "/suppliers" }}
 <section class="container-page pt-18 pb-28">
   <a href="{{ .RelPermalink }}" class="flex flex-wrap items-center justify-between gap-6 rounded-[20px] bg-brand-tint p-[clamp(24px,4vw,40px)] text-ink hover:bg-brand-tint-hover hover:text-ink">
     <span class="flex max-w-[620px] flex-col gap-2">
-      <span class="eyebrow">Also planned</span>
-      <span class="font-display text-[26px] font-semibold tracking-[-0.5px]">{{ .Title }}</span>
-      <span class="text-[15px] leading-[1.55] text-pretty text-muted">Ingredient, style and water data for your own software, without a mybeer.recipes account.</span>
+      <span class="eyebrow">{{ .Title }}</span>
+      <span class="font-display text-[26px] font-semibold tracking-[-0.5px]">{{ .Params.app }}</span>
+      <span class="text-[15px] leading-[1.55] text-pretty text-muted">Maltsters, hop merchants, yeast labs and shops: publish your catalogue, lots and specifications to brewers on mybeer.recipes.</span>
     </span>
     <span class="text-brand">{{ partial "icon.html" (dict "name" "arrow_forward" "class" "size-7") }}</span>
   </a>

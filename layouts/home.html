@@ -23,34 +23,42 @@
     </div>
     {{ with $p.hero.recipe }}
     <figure class="absolute bottom-0 left-0 m-0 w-[min(100%,400px)] overflow-hidden rounded-2xl bg-white shadow-float ring-1 ring-line">
-      <figcaption class="sr-only">Example recipe in mybeer.recipes: {{ .name }}, with its numbers checked against the style range.</figcaption>
+      <figcaption class="sr-only">Example recipe in mybeer.recipes: {{ .name }}, with its numbers checked against the style's range.</figcaption>
       <div class="flex items-center gap-3 border-b border-line-soft px-[18px] pt-4 pb-3.5">
-        <div class="flex size-9 items-center justify-center rounded-[10px] bg-canvas text-brand">{{ partial "icon.html" (dict "name" "sports_bar" "class" "size-5") }}</div>
+        <div class="flex size-9 items-center justify-center rounded-[10px] bg-brand-tint text-brand">{{ partial "icon.html" (dict "name" "sports_bar" "class" "size-5") }}</div>
         <div class="flex min-w-0 flex-col gap-0.5">
           <span class="text-[15px] font-semibold">{{ .name }}</span>
           <span class="text-[13px] text-muted">{{ .meta }}</span>
         </div>
       </div>
-      <dl class="m-0 grid grid-cols-5 gap-2 border-b border-line-soft px-[18px] py-3.5">
+      <dl class="m-0 grid grid-cols-[repeat(5,auto)] justify-between gap-2 border-b border-line-soft px-[18px] py-3.5">
         {{- range .stats }}
         <div class="flex flex-col gap-0.5">
-          <dt class="text-[11px] text-muted">{{ .label }}</dt>
-          <dd class="m-0 flex items-center gap-1.5 font-display text-lg font-semibold">{{ if .swatch }}<span class="size-2.5 rounded-full bg-srm" aria-hidden="true"></span>{{ end }}{{ .value }}</dd>
+          <dt class="text-[10px] font-semibold tracking-[0.6px] uppercase text-muted">{{ .label }}</dt>
+          <dd class="m-0 flex items-center gap-1.5 font-display text-[17px] font-semibold whitespace-nowrap">{{ if .swatch }}<span class="size-2.5 rounded-full bg-srm" aria-hidden="true"></span>{{ end }}{{ .value }}</dd>
         </div>
         {{- end }}
       </dl>
-      <div class="flex flex-col gap-2.5 px-[18px] pt-3 pb-4">
-        <span class="text-xs font-bold tracking-[0.6px] uppercase text-muted">Style fit</span>
+      <div class="flex flex-col gap-3 px-[18px] pt-3 pb-4">
+        <span class="flex items-center justify-between text-[13px] font-semibold">Style<span class="font-normal text-muted">{{ .style }}</span></span>
+        {{- $in := 0 }}
         {{- range .fit }}
-        <div class="grid grid-cols-[44px_1fr_72px] items-center gap-2.5 text-[13px]">
+          {{- $span := sub .max .min }}
+          {{- $from := div (mul (sub .low .min) 100.0) $span }}
+          {{- $width := div (mul (sub .high .low) 100.0) $span }}
+          {{- $at := div (mul (sub .value .min) 100.0) $span }}
+          {{- $ok := and (ge .value .low) (le .value .high) }}
+          {{- if $ok }}{{ $in = add $in 1 }}{{ end }}
+        <div class="grid grid-cols-[52px_1fr_60px] items-center gap-3 text-[13px]">
           <span class="text-muted">{{ .label }}</span>
           <div class="relative h-1.5 rounded-[3px] bg-line-soft" aria-hidden="true">
-            <div class="absolute inset-y-0 rounded-[3px] bg-ok-tint" style="left:{{ .from }}%;width:{{ .span }}%"></div>
-            <div class="absolute -top-[3px] h-3 w-1 rounded-sm bg-ok-strong" style="left:{{ .at }}%"></div>
+            <div class="absolute inset-y-0 rounded-[3px] bg-brand/25" style="left:{{ $from }}%;width:{{ $width }}%"></div>
+            <div class="absolute -top-[3px] h-3 w-[3px] -translate-x-1/2 rounded-sm bg-ink" style="left:{{ $at }}%"></div>
           </div>
-          <span class="flex items-center gap-1 text-xs font-semibold text-ok">{{ partial "icon.html" (dict "name" "check_circle" "class" "size-4") }}In range</span>
+          <span class="text-right font-semibold whitespace-nowrap">{{ .text }}<span class="sr-only">{{ if $ok }}, in range{{ else }}, out of range{{ end }} {{ .low }} to {{ .high }}</span></span>
         </div>
         {{- end }}
+        <span class="flex items-center gap-1.5 pt-0.5 text-[13px] text-muted"><span class="text-ok">{{ partial "icon.html" (dict "name" "check_circle" "class" "size-4") }}</span>{{ $in }} of {{ len .fit }} in style range</span>
       </div>
     </figure>
     {{ end }}

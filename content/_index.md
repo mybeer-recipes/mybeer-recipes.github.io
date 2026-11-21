@@ -20,17 +20,20 @@ hero:
   recipe:
     name: Harbour Light Pale Ale
     meta: American Pale Ale · All grain · 23 L
+    style: American Pale Ale
     stats:
-      - { label: ABV, value: 5.2% }
+      - { label: ABV, value: 5.2 % }
       - { label: IBU, value: "38" }
       - { label: OG, value: "1.052" }
       - { label: FG, value: "1.012" }
-      - { label: SRM, value: "6", swatch: true }
+      - { label: Colour, value: 14 EBC, swatch: true }
+    # Each track runs from min to max; the shaded band is the style's range
+    # (BJCP 18B American Pale Ale) and the marker is the recipe's value.
     fit:
-      - { label: ABV, from: 30, span: 40, at: 48 }
-      - { label: IBU, from: 25, span: 45, at: 52 }
-      - { label: SRM, from: 20, span: 50, at: 34 }
-
+      - { label: ABV, value: 5.2, low: 4.5, high: 6.2, min: 3, max: 8, text: 5.2 % }
+      - { label: IBU, value: 38, low: 30, high: 50, min: 10, max: 70, text: "38" }
+      - { label: OG, value: 1.052, low: 1.045, high: 1.060, min: 1.035, max: 1.070, text: "1.052" }
+      - { label: Colour, value: 14, low: 10, high: 20, min: 0, max: 40, text: 14 EBC }
 features:
   - eyebrow: Recipes
     title: Every change shows what it does to the beer.
@@ -58,30 +61,33 @@ features:
 
 demos:
   fermentables:
-    label: Example fermentables list in the recipe editor, with an estimated original gravity of 1.052
-    total: 5.00 kg
+    label: Example fermentables list in the recipe editor, with a 5 kg grist and an original gravity of 1.052
+    summary: 5.00 kg grist · 3 additions
     og: "1.052"
+    colour: 14 EBC
     items:
-      - { name: Maris Otter, meta: Base malt · 3 EBC, amount: 4.20 kg, share: 84% }
-      - { name: Crystal 60, meta: Caramel · 120 EBC, amount: 0.40 kg, share: 8% }
-      - { name: Wheat malt, meta: Base malt · 4 EBC, amount: 0.40 kg, share: 8% }
+      - { name: Maris Otter, meta: UK · Grain · 3 EBC, amount: "4.20", unit: kg, share: 84 % }
+      - { name: Crystal 60, meta: UK · Crystal · 120 EBC, amount: "0.40", unit: kg, share: 8 % }
+      - { name: Wheat Malt, meta: DE · Grain · 4 EBC, amount: "0.40", unit: kg, share: 8 % }
   brewday:
-    label: Example brew day timeline, with mash steps done and the boil in progress
-    remaining: 42:18 left
-    steps:
-      - { name: Mash in, detail: 67 °C · 60 min, state: done }
-      - { name: Mash out, detail: 76 °C · 10 min, state: done }
-      - { name: Boil, detail: 60 min, state: now }
-      - { name: Whirlpool, detail: 80 °C · 20 min, state: next }
-      - { name: Chill and pitch, detail: 19 °C, state: next }
+    label: Example brew tracker during the boil, with 42 minutes 18 seconds left, the bittering hops added and the next additions due in 27 minutes
+    batch: Batch 14 · Harbour Light Pale Ale
+    title: Boil · 60 min
+    step: Step 3 of 5
+    remaining: "42:18"
+    # How much of the step has run, as a percentage.
+    done: 30
+    additions:
+      - { name: Magnum 18 g, detail: Bittering · at 60 min, state: Added, done: true }
+      - { name: Citra 25 g, detail: Flavour · at 15 min, state: in 27:18 }
+      - { name: Whirlfloc 1 tab, detail: Fining · at 15 min, state: in 27:18 }
   inventory:
-    label: Example inventory list, with Citra hops flagged as short and two items on the shopping list
+    label: Example hop and malt stock, with Citra flagged as short for the next batch and two items on the shopping list
     shopping: 2 items on the shopping list
     items:
       - { icon: grass, name: Maris Otter, meta: Lot 2409-A · best before Mar 2027, amount: 21.4 kg }
-      - { icon: local_florist, name: Citra, meta: Pellet · 12.1% AA, amount: 180 g, short: true }
+      - { icon: local_florist, name: Citra, meta: Batch 15 needs 250 g, amount: 180 g, short: 70 g short }
       - { icon: bubble_chart, name: US-05, meta: Dry yeast · 11.5 g packs, amount: 3 packs }
-
 band:
   image: images/brewing-kit.jpg
   alt: Brewing kit on a workbench, from a plate chiller and ball valve to a stir plate, swing-top bottle and mash paddle

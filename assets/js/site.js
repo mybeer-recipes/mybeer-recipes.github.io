@@ -51,7 +51,12 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
       window.dataLayer.push(arguments);
     };
     window.gtag("js", new Date());
-    window.gtag("config", measurementId, { anonymize_ip: true });
+    // No advertising features, so analytics data is not used to target ads.
+    window.gtag("config", measurementId, {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
@@ -76,6 +81,13 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
     })
   );
   $$("[data-cookie-settings]").forEach((button) => button.addEventListener("click", showBanner));
+
+  // A Global Privacy Control signal counts as declining analytics, as US state
+  // privacy laws require, so there is nothing to ask.
+  if (navigator.globalPrivacyControl === true) {
+    $$("[data-cookie-settings]").forEach((button) => (button.hidden = true));
+    return;
+  }
 
   const choice = readChoice();
   if (choice === null) showBanner();

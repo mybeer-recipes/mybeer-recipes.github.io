@@ -1,62 +1,91 @@
-{{- /* Illustrations of the app for the home page feature rows. */ -}}
+{{- /* Illustrations of the app for the home page feature rows, drawn after its light theme. */ -}}
 {{- $d := .data -}}
 {{- $panel := "w-full max-w-[420px] overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line" -}}
 
 {{- if eq .name "fermentables" }}
 <figure class="m-0 {{ $panel }}">
   <figcaption class="sr-only">{{ $d.label }}</figcaption>
-  <div class="flex items-center justify-between border-b border-line-soft px-[18px] py-3.5">
-    <span class="font-display text-[17px] font-semibold">Fermentables</span>
-    <span class="text-[13px] text-muted">{{ $d.total }}</span>
+  <div class="flex items-center justify-between gap-3 px-[18px] pt-4 pb-3">
+    <span class="flex min-w-0 flex-col gap-0.5">
+      <span class="font-display text-[17px] font-semibold">Fermentables</span>
+      <span class="text-xs text-muted">{{ $d.summary }}</span>
+    </span>
+    <span class="flex h-7 flex-none items-center gap-1 rounded-lg bg-brand-tint px-2.5 text-xs font-semibold text-brand">{{ partial "icon.html" (dict "name" "add" "class" "size-4") }}Add</span>
   </div>
-  {{- range $d.items }}
-  <div class="grid grid-cols-[1fr_auto_52px] items-center gap-3.5 border-b border-line-soft px-[18px] py-3">
-    <div class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .meta }}</span></div>
-    <span class="font-display text-[15px] font-semibold">{{ .amount }}</span>
-    <span class="text-right text-[13px] text-muted">{{ .share }}</span>
+  <div class="mx-3 overflow-hidden rounded-xl ring-1 ring-line">
+    {{- range $d.items }}
+    <div class="grid grid-cols-[1fr_auto_auto_16px] items-center gap-3 border-b border-line-soft px-3 py-2.5 last:border-b-0 min-[420px]:grid-cols-[32px_1fr_auto_auto_16px]">
+      <span class="hidden size-8 items-center justify-center rounded-lg bg-brand-tint text-brand min-[420px]:flex">{{ partial "icon.html" (dict "name" "grass" "class" "size-[18px]") }}</span>
+      <span class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .meta }}</span></span>
+      <span class="text-xs text-muted">{{ .share }}</span>
+      <span class="min-w-[58px] text-right font-display text-[15px] font-semibold">{{ .amount }} <span class="font-sans text-[11px] font-normal text-muted">{{ .unit }}</span></span>
+      <span class="text-subtle">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-4") }}</span>
+    </div>
+    {{- end }}
   </div>
-  {{- end }}
-  <div class="flex justify-between px-[18px] py-3 text-[13px] text-muted"><span>Estimated OG</span><span class="font-display font-semibold text-ink">{{ $d.og }}</span></div>
+  <dl class="m-0 flex flex-col px-[18px] pt-2 pb-3 text-[13px]">
+    <div class="flex justify-between border-b border-line-soft py-2"><dt class="text-muted">Original gravity</dt><dd class="m-0 font-display font-semibold">{{ $d.og }}</dd></div>
+    <div class="flex justify-between py-2"><dt class="text-muted">Colour</dt><dd class="m-0 flex items-center gap-1.5 font-display font-semibold"><span class="size-2.5 rounded-full bg-srm" aria-hidden="true"></span>{{ $d.colour }}</dd></div>
+  </dl>
 </figure>
 
 {{- else if eq .name "brewday" }}
-<figure class="m-0 flex flex-col gap-1 p-[18px] {{ $panel }}">
+<figure class="m-0 flex flex-col gap-3 p-4 {{ $panel }}">
   <figcaption class="sr-only">{{ $d.label }}</figcaption>
-  <div class="flex items-center justify-between pb-2.5">
-    <span class="font-display text-[17px] font-semibold">Brew day</span>
-    <span class="flex h-6 flex-none items-center gap-1 rounded-full bg-brand-tint px-[9px] text-xs font-semibold whitespace-nowrap text-brand">{{ partial "icon.html" (dict "name" "timer" "class" "size-[15px]") }}{{ $d.remaining }}</span>
+  <div class="flex items-center gap-3">
+    <span class="flex size-9 flex-none items-center justify-center rounded-full bg-brand-tint text-brand">{{ partial "icon.html" (dict "name" "timer" "class" "size-5") }}</span>
+    <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span class="truncate text-[11px] text-muted">{{ $d.batch }}</span>
+      <span class="text-[15px] font-semibold">{{ $d.title }}</span>
+    </span>
+    <span class="text-muted">{{ partial "icon.html" (dict "name" "edit_note" "class" "size-5") }}</span>
   </div>
-  <ol class="m-0 flex list-none flex-col p-0">
-    {{- range $d.steps }}
-      {{- $style := dict
-        "done" (dict "dot" "bg-brand-tint text-brand" "icon" "check" "weight" "font-medium")
-        "now" (dict "dot" "bg-brand text-white" "icon" "local_fire_department" "weight" "font-semibold")
-        "next" (dict "dot" "bg-white text-subtle ring-[1.5px] ring-line ring-inset" "icon" "circle" "weight" "font-medium")
-      }}
-      {{- $s := index $style .state }}
-    <li class="grid min-h-11 grid-cols-[24px_1fr_auto] items-center gap-3"{{ if eq .state "now" }} aria-current="step"{{ end }}>
-      <span class="flex size-6 items-center justify-center rounded-full {{ $s.dot }}">{{ partial "icon.html" (dict "name" $s.icon "class" "size-[15px]") }}</span>
-      <span class="text-sm {{ $s.weight }}">{{ .name }}</span>
-      <span class="text-[13px] text-muted">{{ .detail }}</span>
+  <div class="flex flex-col items-center gap-3 rounded-xl px-4 pt-3.5 pb-4 ring-1 ring-line">
+    <span class="text-[11px] font-bold tracking-[0.6px] uppercase text-muted">{{ $d.step }}</span>
+    <span class="font-display text-[44px] leading-none font-semibold tracking-[-1px] tabular-nums">{{ $d.remaining }}</span>
+    <span class="h-1 w-full overflow-hidden rounded-full bg-line-soft" aria-hidden="true"><span class="block h-full rounded-full bg-brand" style="width:{{ $d.done }}%"></span></span>
+    <span class="flex items-center gap-4" aria-hidden="true">
+      <span class="flex size-8 items-center justify-center rounded-full bg-line-soft text-ink">{{ partial "icon.html" (dict "name" "chevron_left" "class" "size-[18px]") }}</span>
+      <span class="flex size-12 items-center justify-center rounded-full bg-brand text-white">{{ partial "icon.html" (dict "name" "pause" "class" "size-6") }}</span>
+      <span class="flex size-8 items-center justify-center rounded-full bg-line-soft text-ink">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-[18px]") }}</span>
+    </span>
+  </div>
+  <span class="pt-1 text-[13px] font-semibold">In this step</span>
+  <ul class="m-0 flex list-none flex-col overflow-hidden rounded-xl p-0 ring-1 ring-line" role="list">
+    {{- range $d.additions }}
+    <li class="grid grid-cols-[22px_1fr_auto] items-center gap-3 border-b border-line-soft px-3 py-2.5 last:border-b-0">
+      {{- if .done }}
+      <span class="flex size-[22px] items-center justify-center rounded-full bg-brand text-white">{{ partial "icon.html" (dict "name" "check" "class" "size-[15px]") }}</span>
+      {{- else }}
+      <span class="size-[22px] rounded-full ring-[1.5px] ring-brand ring-inset"></span>
+      {{- end }}
+      <span class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .detail }}</span></span>
+      <span class="text-xs font-semibold {{ if .done }}text-ink{{ else }}text-brand{{ end }}">{{ .state }}</span>
     </li>
     {{- end }}
-  </ol>
+  </ul>
 </figure>
 
 {{- else if eq .name "inventory" }}
 <figure class="m-0 {{ $panel }}">
   <figcaption class="sr-only">{{ $d.label }}</figcaption>
-  <div class="border-b border-line-soft px-[18px] py-3.5 font-display text-[17px] font-semibold">In stock</div>
-  {{- range $d.items }}
-  <div class="grid grid-cols-[36px_1fr_auto] items-center gap-3 border-b border-line-soft px-[18px] py-3">
-    <span class="flex size-9 items-center justify-center rounded-[10px] bg-canvas text-brand">{{ partial "icon.html" (dict "name" .icon "class" "size-[19px]") }}</span>
-    <div class="flex min-w-0 flex-col gap-0.5"><span class="text-sm font-semibold">{{ .name }}</span><span class="text-xs text-muted">{{ .meta }}</span></div>
-    <div class="flex items-center gap-2">
-      {{- if .short }}<span class="flex h-[22px] items-center rounded-full bg-danger-tint px-2 text-xs font-semibold text-danger">Short</span>{{ end }}
-      <span class="font-display text-[15px] font-semibold">{{ .amount }}</span>
-    </div>
+  <div class="flex items-center justify-between gap-3 px-[18px] pt-4 pb-3">
+    <span class="font-display text-[17px] font-semibold">In stock</span>
+    <span class="flex h-7 flex-none items-center gap-1 rounded-lg bg-brand-tint px-2.5 text-xs font-semibold text-brand">{{ partial "icon.html" (dict "name" "add" "class" "size-4") }}Book in</span>
   </div>
-  {{- end }}
-  <div class="flex items-center gap-1.5 px-[18px] py-3 text-[13px] font-semibold text-brand">{{ partial "icon.html" (dict "name" "shopping_cart" "class" "size-[17px]") }}{{ $d.shopping }}</div>
+  <div class="mx-3 overflow-hidden rounded-xl ring-1 ring-line">
+    {{- range $d.items }}
+    <div class="grid grid-cols-[32px_1fr_auto_16px] items-center gap-3 border-b border-line-soft px-3 py-2.5 last:border-b-0">
+      <span class="flex size-8 items-center justify-center rounded-lg {{ if .short }}bg-danger-tint text-danger{{ else }}bg-brand-tint text-brand{{ end }}">{{ partial "icon.html" (dict "name" .icon "class" "size-[18px]") }}</span>
+      <span class="flex min-w-0 flex-col gap-0.5">
+        <span class="text-sm font-semibold">{{ .name }}</span>
+        <span class="text-xs text-muted">{{ .meta }}{{ with .short }} · <span class="font-semibold text-danger">{{ . }}</span>{{ end }}</span>
+      </span>
+      <span class="font-display text-[15px] font-semibold whitespace-nowrap{{ if .short }} text-danger{{ end }}">{{ .amount }}</span>
+      <span class="text-subtle">{{ partial "icon.html" (dict "name" "chevron_right" "class" "size-4") }}</span>
+    </div>
+    {{- end }}
+  </div>
+  <div class="flex items-center gap-1.5 px-[18px] py-3.5 text-[13px] font-semibold text-brand">{{ partial "icon.html" (dict "name" "shopping_cart" "class" "size-[17px]") }}{{ $d.shopping }}</div>
 </figure>
 {{- end }}

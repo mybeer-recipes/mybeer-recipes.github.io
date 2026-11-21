@@ -2,6 +2,9 @@
 title: Data API
 seoTitle: Brewing Data API for ingredients, styles and water (coming soon) | mybeer.recipes
 layout: data-api
+# Hidden while MyBeer Ingredients (/suppliers/) takes its place. Delete this
+# line, and restore its footer link in config.yaml, to publish it again.
+draft: true
 description: >-
   Ingredient, beer style and water data from mybeer.recipes as an API: malts,
   hops, yeast cultures, style ranges and water profiles for your own apps,
