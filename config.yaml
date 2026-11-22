@@ -5,6 +5,10 @@ copyright: mybeer.recipes
 publishDir: docs
 
 enableRobotsTXT: true
+# Pages get their lastmod from their last commit, unless the front matter sets one.
+enableGitInfo: true
+frontmatter:
+  lastmod: [lastmod, ':git', date]
 disableKinds: [taxonomy, term]
 
 outputs:

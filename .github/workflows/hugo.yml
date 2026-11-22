@@ -24,6 +24,9 @@ jobs:
       TAILWINDCSS_VERSION: 4.3.3
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history, so enableGitInfo can date each page from its last commit.
+          fetch-depth: 0
 
       - name: Install Hugo
         run: |
