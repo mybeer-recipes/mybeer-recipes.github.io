@@ -79,7 +79,7 @@ params:
   social:
     - https://bsky.app/profile/mybeer.recipes
     - https://github.com/mybeer-recipes
-    - https://gitter.im/mybeer-recipes/community
+    - "https://matrix.to/#/!nPwjDzeO4oTcn5HRj7oKUnLUQGraKCaWy_sMlqS2CbI?via=gitter.im"
 
 menus:
   main:
